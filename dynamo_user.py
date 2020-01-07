@@ -3,40 +3,33 @@
 #
 # This file will create the new table store main user details in dynamodb
 
-from ... import aws
+import aws
 from botocore.exceptions import ClientError
 
 # Create dynamodb instance
-client = aws.create_dynamodb_client()
+client = aws.create_dynamodb_client().resource
+
 
 try:
     table = client.create_table(
-        TableName='Movies',
+        TableName='User',
         KeySchema=[
             {
-                'AttributeName': 'year',
-                'KeyType': 'HASH'  # Partition key
-            },
-            {
-                'AttributeName': 'title',
-                'KeyType': 'RANGE'  # Sort key
+                'AttributeName': 'email_address',
+                'KeyType': 'HASH'  # Partition key, unique
             }
         ],
         AttributeDefinitions=[
             {
-                'AttributeName': 'year',
-                'AttributeType': 'N'
-            },
-            {
-                'AttributeName': 'title',
+                'AttributeName': 'email_address',
                 'AttributeType': 'S'
-            },
-
+            }
         ],
         ProvisionedThroughput={
             'ReadCapacityUnits': 10,
             'WriteCapacityUnits': 10
         }
+
     )
 except ClientError as ce:
     print("ERROR CREATING TABLE - ", ce.response)
