@@ -53,17 +53,16 @@ def get_user():
         return custom_400('Email Address not provided or badly formed request.')
 
 
-# @app.route('/updateUser')
-# def update_user():
-#     # In dynamodb is easier to drop and create a user record
-
-#     # Argument 1 - email address
-#     email = request.args.get('email')
-#     # Remove user record from dynamoDB
-#     response = dynamodb_client.delete_item(Key={'email_address': email})
-#     # add back user details provided by parameters
-#     user_details = request.args.get('user_details')
-#     return redirect(url_for('create_user'))
+@app.route('/updateUser', methods=['POST'])
+def update_user():
+    # In dynamodb is easier to drop and create a user record
+    # Argument 1 - email address
+    body = json.loads(request.data)
+    email = body['email']
+    # Remove user record from dynamoDB
+    response = dynamodb_client.delete_item(Key={'email_address': email})
+    # add back user details provided by parameters
+    return redirect(url_for('create_user'))
 
 
 def custom_400(message):
