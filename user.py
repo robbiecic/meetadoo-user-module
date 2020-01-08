@@ -6,6 +6,7 @@ import decimal
 import json
 from flask import Flask, request, abort
 import aws
+import json
 
 app = Flask(__name__)
 
@@ -39,7 +40,12 @@ def get_user():
         # Get data from dynamoDB
         response = dynamodb_client.get_item(
             TableName='User', Key={'email_address': {'S': email}})
-        return response
+        # Check if an user exists
+        try:
+            user = response['Item']
+            return user
+        except:
+            return 'User not found'
     except:
         return custom_400('Email Address not provided or badly formed request.')
 
