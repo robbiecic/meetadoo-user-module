@@ -4,7 +4,7 @@
 
 import decimal
 import json
-from flask import Flask, request, abort
+from flask import Flask, request, abort, redirect, url_for
 import aws
 import json
 
@@ -19,20 +19,23 @@ def hello_world():
     return 'Hello, World!'
 
 
-@app.route('/createUser')
+@app.route('/createUser', methods=['POST'])
 def create_user():
-    # Argument 1 - email
-    email = request.args.get('email')
-    # Argument 2 - firstname
-    firstname = request.args.get('firstname')
-    # Send item to User table
-    response = dynamodb_client.put_item(TableName='User', Item={
-        'email_address': {'S': email}, 'first_name': {'S': firstname}})
+    # Body must contain the user object
+    try:
+        body = json.loads(request.data)
+        email = body['email']
+        firstname = body['email']
+        # Send item to User table
+        response = dynamodb_client.put_item(TableName='User', Item={
+            'email_address': {'S': email}, 'first_name': {'S': firstname}})
+        return response
+    except Exception as e:
+        print(e)
+        return custom_400('User body was poorly formed')
 
-    return response
 
-
-@app.route('/getUser')
+@app.route('/getUser', methods=['GET'])
 def get_user():
     try:
         # Argument 1 - email address
@@ -45,9 +48,22 @@ def get_user():
             user = response['Item']
             return user
         except:
-            return 'User not found'
+            return 'ERROR: User not found'
     except:
         return custom_400('Email Address not provided or badly formed request.')
+
+
+# @app.route('/updateUser')
+# def update_user():
+#     # In dynamodb is easier to drop and create a user record
+
+#     # Argument 1 - email address
+#     email = request.args.get('email')
+#     # Remove user record from dynamoDB
+#     response = dynamodb_client.delete_item(Key={'email_address': email})
+#     # add back user details provided by parameters
+#     user_details = request.args.get('user_details')
+#     return redirect(url_for('create_user'))
 
 
 def custom_400(message):
