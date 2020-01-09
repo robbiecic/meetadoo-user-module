@@ -25,10 +25,11 @@ def create_user():
     try:
         body = json.loads(request.data)
         email = body['email']
-        firstname = body['email']
+        firstname = body['firstname']
+        surname = body['surname']
         # Send item to User table
         response = dynamodb_client.put_item(TableName='User', Item={
-            'email_address': {'S': email}, 'first_name': {'S': firstname}})
+            'email_address': {'S': email}, 'first_name': {'S': firstname}, 'surname': {'S': surname}})
         return response
     except Exception as e:
         print(e)
@@ -56,13 +57,27 @@ def get_user():
 @app.route('/updateUser', methods=['POST'])
 def update_user():
     # In dynamodb is easier to drop and create a user record
-    # Argument 1 - email address
     body = json.loads(request.data)
     email = body['email']
-    # Remove user record from dynamoDB
-    response = dynamodb_client.delete_item(Key={'email_address': email})
-    # add back user details provided by parameters
-    return redirect(url_for('create_user'))
+    # Remove user record from dynamoDB if exists
+    if does_user_exist(email) == 1:
+        dynamodb_client.delete_item(TableName='User', Key={
+                                    'email_address': {'S': email}})
+        # Redirect to create the user again. code 307 represents a post
+        return redirect(url_for('create_user'), code=307)
+    else:
+        return custom_400('No User found')
+
+
+def does_user_exist(email_address):
+    response = dynamodb_client.get_item(
+        TableName='User', Key={'email_address': {'S': email_address}})
+    # Check if an user exists
+    try:
+        a = response['Item']
+        return 1
+    except:
+        return 0
 
 
 def custom_400(message):
