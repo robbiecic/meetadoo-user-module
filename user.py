@@ -63,7 +63,7 @@ def update_user():
     if does_user_exist(email) == 1:
         dynamodb_client.delete_item(TableName='User', Key={
                                     'email_address': {'S': email}})
-        # Redirect to create the user again. code 307 represents a post
+        # Redirect to create the user again. code 307 represents a post, body of request will retain during redirect
         return redirect(url_for('create_user'), code=307)
     else:
         return custom_400('No User found')
