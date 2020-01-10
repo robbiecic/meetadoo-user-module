@@ -21,6 +21,25 @@ def hello_world():
     return 'Hello, World!'
 
 
+@app.route('/login', methods=['POST'])
+def login():
+    # Validate email and password
+    # If validated, return JWT
+    body = json.loads(request.data)
+    email = body['email']
+    hashed_password = encrypt_string(body['password'])
+    # Check if user exists first
+    user_details = return_user(email)
+    if user_details == 0:
+        return 'ERROR: User not found'
+    else:
+        # Check if password matches
+        if compare_passwords(user_details['password'], hashed_password):
+            return 'JWT'
+        else:
+            return 'PASSWORD DID NOT MATCH'
+
+
 @app.route('/createUser', methods=['POST'])
 def create_user():
     # Body must contain the user object
@@ -31,7 +50,7 @@ def create_user():
         surname = body['surname']
         hashed_password = encrypt_string(body['password'])
         # Check if user exists before creating
-        if does_user_exist(email) == 0:
+        if return_user(email) == 0:
             # Send item to User table
             response = dynamodb_client.put_item(TableName='User', Item={
                 'email_address': {'S': email}, 'first_name': {'S': firstname}, 'surname': {'S': surname}, 'password': {'B': hashed_password}})
@@ -69,7 +88,7 @@ def update_user():
     # !!!! NEED TO CHECK IF BODY IS VALID BEFORE WE COMMIT TO DELETING OTHERWISE WE CAN'T RECREATE
 
     # Remove user record from dynamoDB if exists
-    if does_user_exist(email) == 1:
+    if return_user(email) != 0:
         dynamodb_client.delete_item(TableName='User', Key={
                                     'email_address': {'S': email}})
         # Redirect to create the user again. code 307 represents a post, body of request will retain during redirect
@@ -78,13 +97,13 @@ def update_user():
         return custom_400('No User found')
 
 
-def does_user_exist(email_address):
+def return_user(email_address):
     response = dynamodb_client.get_item(
         TableName='User', Key={'email_address': {'S': email_address}})
     # Check if an user exists
     try:
-        a = response['Item']
-        return 1
+        user = response['Item']
+        return user
     except:
         return 0
 
