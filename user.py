@@ -2,11 +2,13 @@
 # cntl-alt-n - to start
 # cntl-alt-m - to finish
 
-import decimal
+# Need to install - py-bcrypt, json, flask
+
 import json
 from flask import Flask, request, abort, redirect, url_for
 import aws
 import json
+import bcrypt
 
 app = Flask(__name__)
 
@@ -27,11 +29,12 @@ def create_user():
         email = body['email']
         firstname = body['firstname']
         surname = body['surname']
+        hashed_password = encrypt_string(body['password'])
         # Check if user exists before creating
         if does_user_exist(email) == 0:
             # Send item to User table
             response = dynamodb_client.put_item(TableName='User', Item={
-                'email_address': {'S': email}, 'first_name': {'S': firstname}, 'surname': {'S': surname}})
+                'email_address': {'S': email}, 'first_name': {'S': firstname}, 'surname': {'S': surname}, 'password': {'B': hashed_password}})
             return response
         else:
             return custom_400('ERROR: A user with this email address already exists.')
@@ -63,6 +66,8 @@ def update_user():
     # In dynamodb is easier to drop and create a user record
     body = json.loads(request.data)
     email = body['email']
+    # !!!! NEED TO CHECK IF BODY IS VALID BEFORE WE COMMIT TO DELETING OTHERWISE WE CAN'T RECREATE
+
     # Remove user record from dynamoDB if exists
     if does_user_exist(email) == 1:
         dynamodb_client.delete_item(TableName='User', Key={
@@ -86,6 +91,21 @@ def does_user_exist(email_address):
 
 def custom_400(message):
     abort(400, description=message)
+
+
+def encrypt_string(string_to_encrypt):
+    master_secret_key = 'RobboSecretKey123'
+    salt = bcrypt.gensalt()
+    combo_password = string_to_encrypt.encode('utf-8') + \
+        salt + master_secret_key.encode('utf-8')
+    hashed_password = bcrypt.hashpw(combo_password, salt)
+    return hashed_password
+
+
+def compare_passwords(existing_password, new_password):
+    new_hash = encrypt_string(new_password)
+    is_same_password = bcrypt.hashpw(new_hash, existing_password)
+    return is_same_password
 
 
 if __name__ == '__main__':
