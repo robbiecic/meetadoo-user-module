@@ -27,10 +27,14 @@ def create_user():
         email = body['email']
         firstname = body['firstname']
         surname = body['surname']
-        # Send item to User table
-        response = dynamodb_client.put_item(TableName='User', Item={
-            'email_address': {'S': email}, 'first_name': {'S': firstname}, 'surname': {'S': surname}})
-        return response
+        # Check if user exists before creating
+        if does_user_exist(email) == 0:
+            # Send item to User table
+            response = dynamodb_client.put_item(TableName='User', Item={
+                'email_address': {'S': email}, 'first_name': {'S': firstname}, 'surname': {'S': surname}})
+            return response
+        else:
+            return custom_400('ERROR: A user with this email address already exists.')
     except Exception as e:
         print(e)
         return custom_400('User body was poorly formed')
