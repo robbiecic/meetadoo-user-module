@@ -9,6 +9,7 @@ from flask import Flask, request, abort, redirect, url_for
 import aws
 import json
 import bcrypt
+import jwt
 
 app = Flask(__name__)
 
@@ -35,9 +36,19 @@ def login():
     else:
         # Check if password matches
         if compare_passwords(user_details['password'], hashed_password):
-            return 'JWT'
+            encoded_jwt = jwt.encode(
+                {'email': email}, 'secret', algorithm='HS256')
+            return encoded_jwt
         else:
             return 'PASSWORD DID NOT MATCH'
+
+
+@app.route('/isAuthenticated', methods=['GET'])
+def isAuthenticated:
+    email = body['email']
+    encoded_jwt = body['jwt']
+    a = jwt.decode(encoded_jwt, 'secret', algorithms=['HS256']) {'some': 'payload'}
+    return a
 
 
 @app.route('/createUser', methods=['POST'])
