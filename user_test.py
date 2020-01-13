@@ -27,7 +27,11 @@ class UserTestCase(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-    # Remove test user
+    # Get Test User
+    def test_get_user(self):
+        response = self.app.get(
+            '/getUser', data=json.dumps(dict(email='test@NoteIt.com')), content_type='application/json')
+        self.assertEqual(response.status_code, 200)
 
 
 if __name__ == '__main__':
