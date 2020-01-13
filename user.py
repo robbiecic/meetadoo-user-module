@@ -37,18 +37,22 @@ def login():
         # Check if password matches
         if compare_passwords(user_details['password'], hashed_password):
             encoded_jwt = jwt.encode(
-                {'email': email}, 'secret', algorithm='HS256')
+                {'email': email}, 'NoteItUser', algorithm='HS256')
             return encoded_jwt
         else:
             return 'PASSWORD DID NOT MATCH'
 
 
 @app.route('/isAuthenticated', methods=['GET'])
-def isAuthenticated:
-    email = body['email']
-    encoded_jwt = body['jwt']
-    a = jwt.decode(encoded_jwt, 'secret', algorithms=['HS256']) {'some': 'payload'}
-    return a
+def isAuthenticated():
+    # Get Parameters
+    encoded_jwt = request.args.get('jwt')
+    decoded_email = jwt.decode(encoded_jwt, 'NoteItUser', algorithms=['HS256'])
+    # If JWT is secure, the email address would be valid
+    if return_user(decoded_email) != 0:
+        return 'TRUE'
+    else:
+        return 'FALSE'
 
 
 @app.route('/createUser', methods=['POST'])
