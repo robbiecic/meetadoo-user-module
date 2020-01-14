@@ -32,7 +32,10 @@ class UserTestCase(unittest.TestCase):
     def test_get_user(self):
         response = self.app.get(
             '/getUser', query_string='email=test@NoteIt.com', content_type='application/json')
+        email_start = str(response.data).find('email_addres', 0)
         self.assertEqual(response.status_code, 200)
+        # If email address is found in the return string, then it successfully finds the email
+        self.assertGreater(email_start, 0)
 
 
 if __name__ == '__main__':
