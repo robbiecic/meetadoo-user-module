@@ -112,6 +112,18 @@ def update_user():
         return custom_400('No User found')
 
 
+@app.route('/removeUser', methods=['POST'])
+def remove_user():
+    body = json.loads(request.data)
+    email = body['email']
+    if return_user(email) != 0:
+        dynamodb_client.delete_item(TableName='User', Key={
+                                    'email_address': {'S': email}})
+        return('Removed User Successfully - ' + str(email))
+    else:
+        return custom_400('No User found')
+
+
 def return_user(email_address):
     response = dynamodb_client.get_item(
         TableName='User', Key={'email_address': {'S': email_address}})
