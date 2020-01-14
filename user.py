@@ -28,16 +28,20 @@ def login():
     # If validated, return JWT
     body = json.loads(request.data)
     email = body['email']
-    hashed_password = encrypt_string(body['password'])
+    password = body['password'].encode('utf-8')
+    #hashed_password = encrypt_string(body['password'])
     # Check if user exists first
     user_details = return_user(email)
     if user_details == 0:
         return 'ERROR: User not found'
     else:
+        hashed_password = user_details['password']['B']
         # Check if password matches
-        if compare_passwords(user_details['password'], hashed_password):
+        if hashed_password == bcrypt.hashpw(password, hashed_password):
+            print('here')
             encoded_jwt = jwt.encode(
                 {'email': email}, 'NoteItUser', algorithm='HS256')
+            print(encoded_jwt)
             return encoded_jwt
         else:
             return 'PASSWORD DID NOT MATCH'
@@ -102,7 +106,7 @@ def get_user():
 
 @app.route('/updateUser', methods=['POST'])
 def update_user():
-    # In dynamodb is easier to drop and create a user record
+    # Can't update key which is email address. Might need a change email address method which removes Item and creates new
     body = json.loads(request.data)
     email = str(body['email'])
     new_firstname = str(body['firstname'])
@@ -157,9 +161,11 @@ def encrypt_string(string_to_encrypt):
 
 
 def compare_passwords(existing_password, new_password):
-    new_hash = encrypt_string(new_password)
-    is_same_password = bcrypt.hashpw(new_hash, existing_password)
-    return is_same_password
+    #existing_password =- bcrypt.hashpw('existing_password', existing_password)
+    if (existing_password == new_password):
+        return 1
+    else:
+        return 0
 
 
 if __name__ == '__main__':
