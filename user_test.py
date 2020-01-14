@@ -16,11 +16,10 @@ class UserTestCase(unittest.TestCase):
 
     # Remove Test User
     def tearDown(self):
-        response = self.app.post(
+        self.app.post(
             '/removeUser',
             data=json.dumps(dict(email='test@NoteIt.com')),
             content_type='application/json')
-        #self.assertEqual(response.status_code, 200)
 
     # Test basic HTML response from parent URL
     def test_main_page(self):
