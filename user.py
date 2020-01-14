@@ -84,7 +84,7 @@ def get_user():
         email = request.args.get('email')
         # Get data from dynamoDB
         response = dynamodb_client.get_item(
-            TableName='User', Key={'email_address': {'S': email}})
+            TableName='User', Key={'email_address': {'S': email}}, AttributesToGet=['email_address', 'firstname', 'surname'])
         # Check if an user exists
         try:
             user = response['Item']
