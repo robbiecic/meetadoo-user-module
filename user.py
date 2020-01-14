@@ -63,13 +63,26 @@ def create_user():
         email = body['email']
         firstname = body['firstname']
         surname = body['surname']
-        hashed_password = encrypt_string(body['password'])
+        try:
+            is_update = body['isUpdate']
+        except:
+            is_update = 0
+
+        # for updates, password will not exist
+        if is_update == '1':
+            print('HERE')
+            item = {'email_address': {'S': email}, 'first_name': {
+                'S': firstname}, 'surname': {'S': surname}}
+        else:
+            hashed_password = encrypt_string(body['password'])
+            item = {'email_address': {'S': email}, 'first_name': {
+                'S': firstname}, 'surname': {'S': surname}, 'password': {'B': hashed_password}}
+
         # Check if user exists before creating
         if return_user(email) == 0:
             # Send item to User table
-            response = dynamodb_client.put_item(TableName='User', Item={
-                'email_address': {'S': email}, 'first_name': {'S': firstname}, 'surname': {'S': surname}, 'password': {'B': hashed_password}})
-            return response
+            response = dynamodb_client.put_item(TableName='User', Item=item)
+            return str(response)
         else:
             return custom_400('ERROR: A user with this email address already exists.')
     except Exception as e:
@@ -102,15 +115,17 @@ def update_user():
     body = json.loads(request.data)
     email = body['previous_email']
     # !!!! NEED TO CHECK IF BODY IS VALID BEFORE WE COMMIT TO DELETING OTHERWISE WE CAN'T RECREATE
-
-    # Remove user record from dynamoDB if exists
-    if return_user(email) != 0:
-        dynamodb_client.delete_item(TableName='User', Key={
-                                    'email_address': {'S': email}})
-        # Redirect to create the user again. code 307 represents a post, body of request will retain during redirect
-        return redirect(url_for('create_user'), code=307)
-    else:
-        return custom_400('No User found')
+    try:
+        # Remove user record from dynamoDB if exists
+        if return_user(email) != 0:
+            dynamodb_client.delete_item(TableName='User', Key={
+                                        'email_address': {'S': email}})
+            # Redirect to create the user again. code 307 represents a post, body of request will retain during redirect
+            return redirect(url_for('create_user'), code=307)
+        else:
+            return custom_400('No User found')
+    except Exception as E:
+        return custom_400(str(E))
 
 
 @app.route('/removeUser', methods=['POST'])
