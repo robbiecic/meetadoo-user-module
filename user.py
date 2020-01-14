@@ -100,7 +100,7 @@ def get_user():
 def update_user():
     # In dynamodb is easier to drop and create a user record
     body = json.loads(request.data)
-    email = body['email']
+    email = body['previous_email']
     # !!!! NEED TO CHECK IF BODY IS VALID BEFORE WE COMMIT TO DELETING OTHERWISE WE CAN'T RECREATE
 
     # Remove user record from dynamoDB if exists

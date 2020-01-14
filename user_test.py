@@ -46,6 +46,16 @@ class UserTestCase(unittest.TestCase):
         # If email address key is found in the return string, then it successfully finds the email
         self.assertGreater(email_start, 0)
 
+    # Update Test User
+    def test_update_user(self):
+        response = self.app.post(
+            '/updateUser',
+            data=json.dumps(dict(email='test@NoteIt2.com', previous_email='test@NoteIt.com',
+                                 password='TestPassword123', firstname='Test', surname='Test Surname')), content_type='application/json'
+        )
+        # Need to handle redirect in above call
+        self.assertEqual(response.status_code, 200)
+
 # End of UserTestCase --------------------------------------------------------------------------------------------------------------------
 
 
@@ -54,6 +64,7 @@ def suite():  # Need to define a suite as setUp and tearDown are called per test
     suite.addTest(UserTestCase('test_main_page'))
     suite.addTest(UserTestCase('test_valid_user_registration'))
     suite.addTest(UserTestCase('test_get_user'))
+    suite.addTest(UserTestCase('test_update_user'))
     return suite
 
 
