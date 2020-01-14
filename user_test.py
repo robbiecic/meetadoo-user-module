@@ -30,16 +30,9 @@ class UserTestCase(unittest.TestCase):
 
     # Get Test User
     def test_get_user(self):
-        email_query = '{"email": "test@NoteIt.com"}'
-        a = json.dumps(email_query)
-        a = a.replace("\\", "")
-        print(a)
-        with app.test_request_context():
-            response = self.app.get(url_for('get_user'),
-                                    query_string=a)
-            print(response)
-            print(response.data)
-            self.assertEqual(response.status_code, 200)
+        response = self.app.get(
+            '/getUser', query_string='email=test@NoteIt.com', content_type='application/json')
+        self.assertEqual(response.status_code, 200)
 
 
 if __name__ == '__main__':

@@ -88,11 +88,11 @@ def get_user():
         # Check if an user exists
         try:
             user = response['Item']
-            return user
+            return str(user)
         except:
-            return 'ERROR: User not found'
+            return 'ERROR: User not found - ' + str(email)
     except:
-        return custom_400('Email Address not provided or badly formed request.')
+        return custom_400('Email Address not provided or badly formed request'+str(email))
 
 
 @app.route('/updateUser', methods=['POST'])
