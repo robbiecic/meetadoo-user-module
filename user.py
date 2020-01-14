@@ -81,18 +81,19 @@ def create_user():
 def get_user():
     try:
         # Argument 1 - email address
-        email = request.args.get('email')
+        email = str(request.args.get('email'))
         # Get data from dynamoDB
         response = dynamodb_client.get_item(
-            TableName='User', Key={'email_address': {'S': email}}, AttributesToGet=['email_address', 'firstname', 'surname'])
+            TableName='User', Key={'email_address': {'S': email}}, AttributesToGet=['email_address'])
         # Check if an user exists
         try:
             user = response['Item']
             return str(user)
         except:
-            return 'ERROR: User not found - ' + str(email)
-    except:
-        return custom_400('Email Address not provided or badly formed request'+str(email))
+            return custom_400('ERROR: User not found - ' + str(email))
+    except Exception as e:
+        print('/getUser' + str(e))
+        return custom_400('Email Address not found or badly formed request ' + str(email))
 
 
 @app.route('/updateUser', methods=['POST'])

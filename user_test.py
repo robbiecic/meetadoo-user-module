@@ -8,15 +8,17 @@ from flask import url_for
 class UserTestCase(unittest.TestCase):
 
     # executed prior to each test
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         app.config['TESTING'] = True
         app.config['WTF_CSRF_ENABLED'] = False
         app.config['DEBUG'] = False
-        self.app = app.test_client()
+        cls.app = app.test_client()
 
     # Remove Test User
-    def tearDown(self):
-        self.app.post(
+    @classmethod
+    def tearDownClass(cls):
+        cls.app.post(
             '/removeUser',
             data=json.dumps(dict(email='test@NoteIt.com')),
             content_type='application/json')
@@ -40,11 +42,21 @@ class UserTestCase(unittest.TestCase):
         response = self.app.get(
             '/getUser', query_string='email=test@NoteIt.com', content_type='application/json')
         email_start = str(response.data).find('email_address', 0)
-        print(response.data)
         self.assertEqual(response.status_code, 200)
         # If email address key is found in the return string, then it successfully finds the email
         self.assertGreater(email_start, 0)
 
+# End of UserTestCase --------------------------------------------------------------------------------------------------------------------
+
+
+def suite():  # Need to define a suite as setUp and tearDown are called per test otherwise
+    suite = unittest.TestSuite()
+    suite.addTest(UserTestCase('test_main_page'))
+    suite.addTest(UserTestCase('test_valid_user_registration'))
+    suite.addTest(UserTestCase('test_get_user'))
+    return suite
+
 
 if __name__ == '__main__':
-    unittest.main()
+    runner = unittest.TextTestRunner()
+    runner.run(suite())
