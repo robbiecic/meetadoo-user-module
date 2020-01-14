@@ -31,7 +31,7 @@ class UserTestCase(unittest.TestCase):
         response = self.app.post(
             '/createUser',
             data=json.dumps(dict(email='test@NoteIt.com',
-                                 password='TestPassword123', firstname='Test', surname='TestSurnace')), content_type='application/json'
+                                 password='TestPassword123', firstname='Test', surname='Test Surname')), content_type='application/json'
         )
         self.assertEqual(response.status_code, 200)
 
@@ -42,7 +42,7 @@ class UserTestCase(unittest.TestCase):
         email_start = str(response.data).find('email_address', 0)
         print(response.data)
         self.assertEqual(response.status_code, 200)
-        # If email address is found in the return string, then it successfully finds the email
+        # If email address key is found in the return string, then it successfully finds the email
         self.assertGreater(email_start, 0)
 
 
