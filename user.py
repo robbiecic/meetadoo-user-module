@@ -11,6 +11,9 @@ import json
 import bcrypt
 import jwt
 import base64
+from datetime import datetime
+from datetime import timedelta
+
 
 app = Flask(__name__)
 
@@ -42,8 +45,9 @@ def login():
         hashed_password = user_details['password']['B']
         # Check if password matches
         if bcrypt.checkpw(password+master_secret_key.encode('utf-8'), hashed_password):
+            expiry_time = datetime.utcnow() + timedelta(seconds=60*30)
             encoded_jwt = jwt.encode(
-                {'email': email}, 'NoteItUser', algorithm='HS256')
+                {'email': email, 'exp': expiry_time}, 'NoteItUser', algorithm='HS256')
             return encoded_jwt
         else:
             return custom_400('PASSWORD DID NOT MATCH')
@@ -53,12 +57,18 @@ def login():
 def isAuthenticated():
     # Get Parameters
     body = json.loads(request.data)
-    encoded_jwt = body['jwt']
-    encoded_jwt = base64.b64encode(encoded_jwt)
-    print(encoded_jwt)
-    decoded_email = jwt.decode(
-        str(encoded_jwt), 'NoteItUser', algorithms=['HS256']).decode('utf-8')
-    print(decoded_email)
+    #encoded_jwt = body['jwt']
+    encoded_jwt = str(body['jwt'][1:len(body['jwt'])])
+    encoded_jwt = encoded_jwt.replace('.', '=')
+    decoded_jwt = str(base64.b64decode(encoded_jwt))
+
+    # Get position of email
+    email_start = str(decoded_jwt).find('email', 0)
+    sub_string = decoded_jwt[email_start-2:255]
+    sub_string = sub_string.replace("'", "")
+    d = json.loads(sub_string)
+    decoded_email = d['email']
+
     # If JWT is secure, the email address would be valid
     if return_user(decoded_email) != 0:
         return 'TRUE'
