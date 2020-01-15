@@ -67,8 +67,14 @@ class UserTestCase(unittest.TestCase):
                                  password='TestPassword123')), content_type='application/json')
         # Need to handle redirect in above call
         self.assertEqual(response.status_code, 200)
+        # Store returned JWT so we can test the isAuthenticated method
+        jwt_response = response.data
+        response = self.app.post(
+            '/isAuthenticated', data=json.dumps(dict(jwt=str(jwt_response))), content_type='application/json')
+        self.assertEqual(response.status_code, 200)
 
     # Test Failed Login
+
     def test_failed_login(self):
         response = self.app.post(
             '/login',

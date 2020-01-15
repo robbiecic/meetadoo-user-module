@@ -10,6 +10,7 @@ import aws
 import json
 import bcrypt
 import jwt
+import base64
 
 app = Flask(__name__)
 
@@ -48,16 +49,21 @@ def login():
             return custom_400('PASSWORD DID NOT MATCH')
 
 
-@app.route('/isAuthenticated', methods=['GET'])
+@app.route('/isAuthenticated', methods=['POST'])
 def isAuthenticated():
     # Get Parameters
-    encoded_jwt = request.args.get('jwt')
-    decoded_email = jwt.decode(encoded_jwt, 'NoteItUser', algorithms=['HS256'])
+    body = json.loads(request.data)
+    encoded_jwt = body['jwt']
+    encoded_jwt = base64.b64encode(encoded_jwt)
+    print(encoded_jwt)
+    decoded_email = jwt.decode(
+        str(encoded_jwt), 'NoteItUser', algorithms=['HS256']).decode('utf-8')
+    print(decoded_email)
     # If JWT is secure, the email address would be valid
     if return_user(decoded_email) != 0:
         return 'TRUE'
     else:
-        return 'FALSE'
+        return custom_400('JWT NOT VALID')
 
 
 @app.route('/createUser', methods=['POST'])
