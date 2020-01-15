@@ -59,17 +59,23 @@ class UserTestCase(unittest.TestCase):
         # Need to handle redirect in above call
         self.assertEqual(response.status_code, 200)
 
-    # Test Loging
+    # Test Login
     def test_login(self):
         response = self.app.post(
             '/login',
             data=json.dumps(dict(email='test@NoteIt.com',
                                  password='TestPassword123')), content_type='application/json')
-        print(response)
-        print(response.data)
         # Need to handle redirect in above call
         self.assertEqual(response.status_code, 200)
 
+    # Test Failed Login
+    def test_failed_login(self):
+        response = self.app.post(
+            '/login',
+            data=json.dumps(dict(email='test@NoteIt.com',
+                                 password='WRONGPASSWORD')), content_type='application/json')
+        # Need to handle redirect in above call
+        self.assertEqual(response.status_code, 400)
 
 # End of UserTestCase --------------------------------------------------------------------------------------------------------------------
 
@@ -81,6 +87,7 @@ def suite():  # Need to define a suite as setUp and tearDown are called per test
     suite.addTest(UserTestCase('test_get_user'))
     suite.addTest(UserTestCase('test_update_user'))
     suite.addTest(UserTestCase('test_login'))
+    suite.addTest(UserTestCase('test_failed_login'))
     return suite
 
 

@@ -16,6 +16,9 @@ app = Flask(__name__)
 # Create dynamodb instance
 dynamodb_client = aws.create_dynamodb_client()
 
+# Set Master key for cryptography
+master_secret_key = 'RobboSecretKey123'
+
 
 @app.route('/')
 def hello_world():
@@ -33,18 +36,16 @@ def login():
     # Check if user exists first
     user_details = return_user(email)
     if user_details == 0:
-        return 'ERROR: User not found'
+        return custom_400('ERROR: User not found')
     else:
         hashed_password = user_details['password']['B']
         # Check if password matches
-        if hashed_password == bcrypt.hashpw(password, hashed_password):
-            print('here')
+        if bcrypt.checkpw(password+master_secret_key.encode('utf-8'), hashed_password):
             encoded_jwt = jwt.encode(
                 {'email': email}, 'NoteItUser', algorithm='HS256')
-            print(encoded_jwt)
             return encoded_jwt
         else:
-            return 'PASSWORD DID NOT MATCH'
+            return custom_400('PASSWORD DID NOT MATCH')
 
 
 @app.route('/isAuthenticated', methods=['GET'])
@@ -152,10 +153,9 @@ def custom_400(message):
 
 
 def encrypt_string(string_to_encrypt):
-    master_secret_key = 'RobboSecretKey123'
     salt = bcrypt.gensalt()
-    combo_password = string_to_encrypt.encode('utf-8') + \
-        salt + master_secret_key.encode('utf-8')
+    combo_password = string_to_encrypt.encode(
+        'utf-8') + master_secret_key.encode('utf-8')
     hashed_password = bcrypt.hashpw(combo_password, salt)
     return hashed_password
 
