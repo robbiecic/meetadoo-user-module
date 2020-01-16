@@ -31,12 +31,10 @@ def hello_world():
 
 @app.route('/login', methods=['POST'])
 def login():
-    # Validate email and password
-    # If validated, return JWT
+    # Validate email and password. If validated, return JWT
     body = json.loads(request.data)
     email = body['email']
     password = body['password'].encode('utf-8')
-    #hashed_password = encrypt_string(body['password'])
     # Check if user exists first
     user_details = return_user(email)
     if user_details == 0:
@@ -85,7 +83,7 @@ def create_user():
         firstname = body['firstname']
         surname = body['surname']
 
-        # for updates, password will not exist
+        # For updates, password will not exist
         hashed_password = encrypt_string(body['password'])
         item = {'email_address': {'S': email}, 'first_name': {
             'S': firstname}, 'surname': {'S': surname}, 'password': {'B': hashed_password}}
@@ -174,14 +172,6 @@ def encrypt_string(string_to_encrypt):
         'utf-8') + master_secret_key.encode('utf-8')
     hashed_password = bcrypt.hashpw(combo_password, salt)
     return hashed_password
-
-
-def compare_passwords(existing_password, new_password):
-    #existing_password =- bcrypt.hashpw('existing_password', existing_password)
-    if (existing_password == new_password):
-        return 1
-    else:
-        return 0
 
 
 if __name__ == '__main__':
