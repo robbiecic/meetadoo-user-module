@@ -53,7 +53,7 @@ def login():
             return custom_400('PASSWORD DID NOT MATCH')
 
 
-@app.route('/isAuthenticated', methods=['POST'])
+@app.route('/checkJWT', methods=['POST'])
 def isAuthenticated():
     # Get Parameters
     body = json.loads(request.data)
@@ -62,15 +62,15 @@ def isAuthenticated():
     encoded_jwt = encoded_jwt.replace('.', '=')
     decoded_jwt = str(base64.b64decode(encoded_jwt))
 
-    # Get position of email
+    # Get position of expiration datetime
     email_start = str(decoded_jwt).find('email', 0)
     sub_string = decoded_jwt[email_start-2:255]
     sub_string = sub_string.replace("'", "")
     d = json.loads(sub_string)
-    decoded_email = d['email']
-
-    # If JWT is secure, the email address would be valid
-    if return_user(decoded_email) != 0:
+    #decoded_email = d['email']
+    expiration = datetime.fromtimestamp(d['exp'])
+    current_time = datetime.utcnow()
+    if current_time <= expiration:
         return 'TRUE'
     else:
         return custom_400('JWT NOT VALID')

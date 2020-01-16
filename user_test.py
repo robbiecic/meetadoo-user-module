@@ -70,7 +70,7 @@ class UserTestCase(unittest.TestCase):
         # Store returned JWT so we can test the isAuthenticated method
         jwt_response = response.data
         response = self.app.post(
-            '/isAuthenticated', data=json.dumps(dict(jwt=str(jwt_response))), content_type='application/json')
+            '/checkJWT', data=json.dumps(dict(jwt=str(jwt_response))), content_type='application/json')
         self.assertEqual(response.status_code, 200)
 
     # Test Failed Login
@@ -90,8 +90,8 @@ def suite():  # Need to define a suite as setUp and tearDown are called per test
     suite = unittest.TestSuite()
     suite.addTest(UserTestCase('test_main_page'))
     suite.addTest(UserTestCase('test_valid_user_registration'))
-    # suite.addTest(UserTestCase('test_get_user'))
-    # suite.addTest(UserTestCase('test_update_user'))
+    suite.addTest(UserTestCase('test_get_user'))
+    suite.addTest(UserTestCase('test_update_user'))
     suite.addTest(UserTestCase('test_login'))
     suite.addTest(UserTestCase('test_failed_login'))
     return suite
