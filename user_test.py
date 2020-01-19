@@ -68,7 +68,8 @@ class UserTestCase(unittest.TestCase):
         # Need to handle redirect in above call
         self.assertEqual(response.status_code, 200)
         # Store returned JWT so we can test the isAuthenticated method
-        jwt_response = response.data.token
+        jwt_response = json.loads(response.data)
+        jwt_response = jwt_response['token']
         response = self.app.post(
             '/checkJWT', data=json.dumps(dict(jwt=str(jwt_response))), content_type='application/json')
         self.assertEqual(response.status_code, 200)
