@@ -42,11 +42,11 @@ def login():
     else:
         hashed_password = user_details['password']['B']
         # Check if password matches
-        if bcrypt.checkpw(password+master_secret_key.encode('utf-8'), hashed_password):
-            expiry_time = datetime.utcnow() + timedelta(seconds=60*30)
+        if bcrypt.checkpw(password + master_secret_key.encode('utf-8'), hashed_password):
+            expiry_time = datetime.utcnow() + timedelta(seconds=60 * 30)
             encoded_jwt = jwt.encode(
                 {'email': email, 'exp': expiry_time}, 'NoteItUser', algorithm='HS256')
-            return encoded_jwt
+            return {"token": str(encoded_jwt)}
         else:
             return custom_400('PASSWORD DID NOT MATCH')
 
@@ -62,7 +62,7 @@ def isAuthenticated():
 
     # Get position of expiration datetime
     email_start = str(decoded_jwt).find('email', 0)
-    sub_string = decoded_jwt[email_start-2:255]
+    sub_string = decoded_jwt[email_start - 2:255]
     sub_string = sub_string.replace("'", "")
     d = json.loads(sub_string)
     #decoded_email = d['email']
