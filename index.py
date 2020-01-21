@@ -12,7 +12,7 @@ def lambda_handler(event, context):
     if (action == 'Create User'):
         result = create_user(body)
         return {
-            'statusCode': result[']statusCode'],
+            'statusCode': result['statusCode'],
             'body': result['response']
         }
     else:
