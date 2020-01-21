@@ -2,7 +2,6 @@ import unittest
 import user
 from user import app
 import json
-from flask import url_for
 
 
 class UserTestCase(unittest.TestCase):
