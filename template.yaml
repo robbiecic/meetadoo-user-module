@@ -1,9 +1,9 @@
-AWSTemplateFormatVersion: "2010-09-09"
-Transform: AWS::Serverless-2016-10-31
+AWSTemplateFormatVersion: 2010-09-09
+Transform: "AWS::Serverless-2016-10-31"
 Description: User Module API Lambda
 Resources:
   algo:
-    Type: AWS::Serverless::Function
+    Type: "AWS::Serverless::Function"
     Properties:
       Handler: index.py
       Runtime: python3.8
@@ -11,7 +11,7 @@ Resources:
       CodeUri: ./
       Events:
         User API:
-         Type: Api
-          Properties:
-            Path: /
-            Method: POST
+          Type: Api
+          Properties: null
+          Path: /
+          Method: POST
