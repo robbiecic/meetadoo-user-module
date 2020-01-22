@@ -8,7 +8,6 @@ phases:
       - pip3 install boto3 -t ./
       - pip3 install bcrypt -t ./
       - pip3 install pycrypt -t ./
-      - pip3 install unittest -t ./
       - pip3 install flask -t ./
       - export BUCKET=builds-user-module
       - aws cloudformation package --template-file template.yaml --s3-bucket $BUCKET --output-template-file outputtemplate.yaml
