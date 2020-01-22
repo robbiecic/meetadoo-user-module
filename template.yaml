@@ -10,8 +10,8 @@ Resources:
       MemorySize: 256
       CodeUri: ./
       Events:
-        User API:
+        ApiEvent:
           Type: Api
-          Properties: null
-          Path: /
-          Method: POST
+          Properties:
+            Path: /Development
+            Method: POST
