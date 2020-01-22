@@ -5,9 +5,9 @@ from post import create_user
 def lambda_handler(event, context):
 
     # This API is driven off the body containing the attribute 'request_action'
-    bodydata = json.loads(event['body'])
-    action = bodydata['request_action']
-    body = bodydata['data']
+    #bodydata = json.loads(event['body'])
+    #action = bodydata['request_action']
+    #body = bodydata['data']
 
     return {
         'statusCode': 200,
