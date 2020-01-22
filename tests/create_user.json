@@ -1,0 +1,9 @@
+{
+    "request_action": "Create User",
+    "data": {
+        "email": "robert.cicero@test.com",
+        "firstname": "Robert",
+        "surname": "Cicero",
+        "password": "password"
+    }
+}

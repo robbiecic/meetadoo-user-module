@@ -9,14 +9,19 @@ def lambda_handler(event, context):
     action = bodydata['request_action']
     body = bodydata['data']
 
-    if (action == 'Create User'):
-        result = create_user(body)
-        return {
-            'statusCode': result['statusCode'],
-            'body': result['response']
-        }
-    else:
-        return {
-            'statusCode': 400,
-            'body': 'Incorrect action submitted'
-        }
+    return {
+        'statusCode': 200,
+        'body': 'Status OK'
+    }
+
+    # if (action == 'Create User'):
+    #     result = create_user(body)
+    #     return {
+    #         'statusCode': result['statusCode'],
+    #         'body': result['response']
+    #     }
+    # else:
+    #     return {
+    #         'statusCode': 400,
+    #         'body': 'Incorrect action submitted'
+    #     }
