@@ -33,7 +33,7 @@ class E2ETestCase(unittest.TestCase):
     # Create test user
     def test_valid_user_registration(self):
         # sending get request and saving the response as response object
-        response = requests.post(url=url, data=json_data)
+        response = requests.post(url=url, data=data)
         self.assertEqual(response.status_code, 200)
 
 # End of E2ETestCase --------------------------------------------------------------------------------------------------------------------
