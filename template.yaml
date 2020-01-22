@@ -5,7 +5,7 @@ Resources:
   algo:
     Type: "AWS::Serverless::Function"
     Properties:
-      Handler: index.py
+      Handler: index.lambda_handler
       Runtime: python3.8
       MemorySize: 256
       CodeUri: ./
