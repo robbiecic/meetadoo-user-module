@@ -82,9 +82,8 @@ def create_user(body):
         return custom_400('User body was poorly formed')
 
 
-def update_user(data):
+def update_user(body):
     # Can't update key which is email address. Might need a change email address method which removes Item and creates new
-    body = json.loads(data)
     email = str(body['email'])
     new_firstname = str(body['firstname'])
     new_surname = str(body['surname'])
@@ -94,7 +93,7 @@ def update_user(data):
             dynamodb_client.update_item(TableName='User', Key={'email_address': {'S': email}},
                                         UpdateExpression="SET first_name = :firstnameUpdated, surname = :surnameUpdated",
                                         ExpressionAttributeValues={':firstnameUpdated': {'S': new_firstname}, ':surnameUpdated': {'S': new_surname}})
-            return 'Updated User - ' + email
+            return {'statusCode': 200, 'response': str('Updated User - ' + email)}
         else:
             return custom_400('No User found')
     except Exception as E:

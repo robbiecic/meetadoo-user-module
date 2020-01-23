@@ -1,25 +1,20 @@
 import unittest
-from post import login, create_user, remove_user
+from post import login, create_user, remove_user, update_user
 
+# Data set up only for this unit test. WIll be teared down after
 user_object = {"email": "test@NoteIt.com",
                "password": "TestPassword123", "firstname": "Test", "surname": "Test Surname"}
+
+user_object2 = {"email": "test@NoteIt.com",
+                "firstname": "New Name", "surname": "New Surname"}
 
 
 class UserTestCase(unittest.TestCase):
 
-    # # executed prior to each test
-    # @classmethod
-    # def setUpClass(cls):
-    #     app.config['TESTING'] = True
-    #     app.config['WTF_CSRF_ENABLED'] = False
-    #     app.config['DEBUG'] = False
-    #     cls.app = app.test_client()
-
     # Remove Test User
     @classmethod
     def tearDownClass(cls):
-        remove_user('test@NoteIt2.com')
-        remove_user('test@NoteIt2.com')
+        remove_user('test@NoteIt.com')
 
     # Create test user
     def test_create_user(self):
@@ -35,14 +30,11 @@ class UserTestCase(unittest.TestCase):
     #     # If email address key is found in the return string, then it successfully finds the email
     #     self.assertGreater(email_start, 0)
 
-    # # Update Test User
-    # def test_update_user(self):
-    #     response = self.app.post(
-    #         '/updateUser',
-    #         data=json.dumps(dict(email='test@NoteIt.com', firstname='Test', surname='Test Surname')), content_type='application/json', follow_redirects=True
-    #     )
-    #     # Need to handle redirect in above call
-    #     self.assertEqual(response.status_code, 200)
+    # Update Test User
+    def test_update_user(self):
+        response = update_user(user_object2)
+        # Need to handle redirect in above call
+        self.assertEqual(response['statusCode'], 200)
 
     # # Test Login
     # def test_login(self):
@@ -75,9 +67,9 @@ class UserTestCase(unittest.TestCase):
 def suite():  # Need to define a suite as setUp and tearDown are called per test otherwise
     suite = unittest.TestSuite()
     suite.addTest(UserTestCase('test_create_user'))
+    suite.addTest(UserTestCase('test_update_user'))
     # suite.addTest(UserTestCase('test_valid_user_registration'))
     # suite.addTest(UserTestCase('test_get_user'))
-    # suite.addTest(UserTestCase('test_update_user'))
     # suite.addTest(UserTestCase('test_login'))
     # suite.addTest(UserTestCase('test_failed_login'))
     return suite
