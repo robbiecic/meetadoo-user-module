@@ -8,7 +8,7 @@ phases:
       - pip3 install bcrypt -t ./
       - pip3 install pycrypt -t ./
       - pip3 install flask -t ./
-      - pip3 install jwt -t ./
+      - pip3 install pyjwt -t ./
   pre_build:
     commands:
       - python -m unittest tests/user_test.py
