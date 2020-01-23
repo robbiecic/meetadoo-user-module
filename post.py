@@ -59,14 +59,12 @@ def isAuthenticated(data):
         return custom_400('JWT NOT VALID')
 
 
-def create_user(data):
+def create_user(body):
     # Body must contain the user object
     try:
-        body = json.loads(data)
         email = body['email']
         firstname = body['firstname']
         surname = body['surname']
-
         # For updates, password will not exist
         hashed_password = encrypt_string(body['password'])
         item = {'email_address': {'S': email}, 'first_name': {
@@ -103,9 +101,7 @@ def update_user(data):
         return custom_400(str(E))
 
 
-def remove_user(data):
-    body = json.loads(data)
-    email = body['email']
+def remove_user(email):
     if return_user(email) != 0:
         dynamodb_client.delete_item(TableName='User', Key={
                                     'email_address': {'S': email}})
