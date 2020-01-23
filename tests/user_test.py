@@ -1,5 +1,5 @@
 import unittest
-from post import login, create_user, remove_user, update_user, isAuthenticated
+from post import login, create_user, remove_user, update_user, isAuthenticated, return_user
 import json
 
 # Data set up only for this unit test. WIll be teared down after
@@ -26,13 +26,11 @@ class UserTestCase(unittest.TestCase):
         self.assertEqual(response['statusCode'], 200)
 
     # # Get Test User
-    # def test_get_user(self):
-    #     response = self.app.get(
-    #         '/getUser', query_string='email=test@NoteIt.com', content_type='application/json')
-    #     email_start = str(response.data).find('email_address', 0)
-    #     self.assertEqual(response.status_code, 200)
-    #     # If email address key is found in the return string, then it successfully finds the email
-    #     self.assertGreater(email_start, 0)
+    def test_get_user(self):
+        response = return_user(user_object['email'])
+        email_start = str(response).find('email_address', 0)
+        # If email address key is found in the return string, then it successfully finds the email
+        self.assertGreater(email_start, 0)
 
     # Update Test User
     def test_update_user(self):
@@ -60,10 +58,10 @@ class UserTestCase(unittest.TestCase):
 def suite():  # Need to define a suite as setUp and tearDown are called per test otherwise
     suite = unittest.TestSuite()
     suite.addTest(UserTestCase('test_create_user'))
+    suite.addTest(UserTestCase('test_get_user'))
     suite.addTest(UserTestCase('test_update_user'))
     suite.addTest(UserTestCase('test_login'))
     suite.addTest(UserTestCase('test_failed_login'))
-    # suite.addTest(UserTestCase('test_get_user'))
     return suite
 
 
