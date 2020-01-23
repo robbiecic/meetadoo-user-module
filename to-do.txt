@@ -1,5 +1,3 @@
-1. Create Unit Test file for lambda only version
-2. Integrate Unit Test run in pipeline - "- python -m unittest tests/user_test.py"
-3. Integrate E2E test in pipeline
-4. Work out how to do documentation with API
-5. Establish an Alias API (domain)
+1. Integrate E2E test in pipeline
+2. Work out how to do documentation with API
+3. Establish an Alias API (domain)

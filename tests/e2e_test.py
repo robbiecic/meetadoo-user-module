@@ -13,7 +13,7 @@ with open('tests/create_user.json') as json_file:
     password = data['password']
 
 # Set URL where API calls are made
-url = 'https://i6vtmh1eq3.execute-api.ap-southeast-2.amazonaws.com/Development'
+url = "https://i6vtmh1eq3.execute-api.ap-southeast-2.amazonaws.com/Development"
 
 
 class E2ETestCase(unittest.TestCase):
@@ -33,7 +33,9 @@ class E2ETestCase(unittest.TestCase):
     # Create test user
     def test_valid_user_registration(self):
         # sending get request and saving the response as response object
-        response = requests.post(url=url, data=data)
+        response = requests.post(url=url, data=json.dumps(json_data), headers={
+                                 'content-type': 'application/json'})
+        print(response.content)
         self.assertEqual(response.status_code, 200)
 
 # End of E2ETestCase --------------------------------------------------------------------------------------------------------------------
