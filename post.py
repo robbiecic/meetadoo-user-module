@@ -16,9 +16,8 @@ dynamodb_client = aws.create_dynamodb_client()
 master_secret_key = 'RobboSecretKey123'
 
 
-def login(data):
+def login(body):
     # Validate email and password. If validated, return JWT
-    body = json.loads(data)
     email = body['email']
     password = body['password'].encode('utf-8')
     # Check if user exists first
@@ -32,14 +31,12 @@ def login(data):
             expiry_time = datetime.utcnow() + timedelta(seconds=60 * 30)
             encoded_jwt = jwt.encode(
                 {'email': email, 'exp': expiry_time}, 'NoteItUser', algorithm='HS256')
-            return {"token": str(encoded_jwt)}
+            return {'statusCode': 200, "token": str(encoded_jwt)}
         else:
             return custom_400('PASSWORD DID NOT MATCH')
 
 
-def isAuthenticated(data):
-    # Get Parameters
-    body = json.loads(data)
+def isAuthenticated(body):
     #encoded_jwt = body['jwt']
     encoded_jwt = str(body['jwt'][1:len(body['jwt'])])
     encoded_jwt = encoded_jwt.replace('.', '=')
@@ -54,7 +51,7 @@ def isAuthenticated(data):
     expiration = datetime.fromtimestamp(d['exp'])
     current_time = datetime.utcnow()
     if current_time <= expiration:
-        return 'TRUE'
+        return {'statusCode': 200}
     else:
         return custom_400('JWT NOT VALID')
 
