@@ -1,5 +1,4 @@
 {
-  "request_action": "Remove User",
   "data": {
     "email": "robert.cicero@test.com",
     "firstname": "Robert",

@@ -17,13 +17,13 @@ class E2ETestCase(unittest.TestCase):
     # Remove Test User
     @classmethod
     def tearDownClass(cls):
-        requests.post(url=url, data=json.dumps(json_data_remove), headers={
+        requests.post(url=url+"?action=RemoveUser", data=json.dumps(json_data_remove), headers={
             'content-type': 'application/json'})
 
     # Create test user
     def test_valid_user_registration(self):
         # sending get request and saving the response as response object
-        response = requests.post(url=url, data=json.dumps(json_data), headers={
+        response = requests.post(url=url+"?action=CreateUser", data=json.dumps(json_data), headers={
                                  'content-type': 'application/json'})
         print(response.content)
         self.assertEqual(response.status_code, 200)

@@ -7,17 +7,17 @@ def lambda_handler(event, context):
     # This API is driven off the body containing the attribute 'request_action'
     try:
         bodydata = json.loads(event['body'])
-        action = bodydata['request_action']
+        action = event["queryStringParameters"]['action']
         body = bodydata['data']
         email = body['email']
 
-        if (action == 'Create User'):
+        if (action == 'CreateUser'):
             result = create_user(body)
             return {
                 'statusCode': result['statusCode'],
                 'body': result['response']
             }
-        elif (action == 'Remove User'):
+        elif (action == 'RemoveUser'):
             result = remove_user(email)
             return {
                 'statusCode': result['statusCode'],
