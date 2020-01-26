@@ -30,30 +30,25 @@ def login(body):
         if bcrypt.checkpw(password + master_secret_key.encode('utf-8'), hashed_password):
             expiry_time = datetime.utcnow() + timedelta(seconds=60 * 30)
             encoded_jwt = jwt.encode(
-                {'email': email, 'exp': expiry_time}, 'NoteItUser', algorithm='HS256')
+                {'email': email, 'exp': expiry_time}, 'NoteItUser', algorithm='HS256').decode('utf-8')
             return {'statusCode': 200, "token": str(encoded_jwt)}
         else:
             return custom_400('PASSWORD DID NOT MATCH')
 
 
-def isAuthenticated(body):
-    #encoded_jwt = body['jwt']
-    encoded_jwt = str(body['jwt'][1:len(body['jwt'])])
-    encoded_jwt = encoded_jwt.replace('.', '=')
-    decoded_jwt = str(base64.b64decode(encoded_jwt))
-
-    # Get position of expiration datetime
-    email_start = str(decoded_jwt).find('email', 0)
-    sub_string = decoded_jwt[email_start - 2:255]
-    sub_string = sub_string.replace("'", "")
-    d = json.loads(sub_string)
-    #decoded_email = d['email']
-    expiration = datetime.fromtimestamp(d['exp'])
+def isAuthenticated(encoded_jwt):
+    # jwt decode will throw an exception if fails verification
+    try:
+        payload = jwt.decode(encoded_jwt, 'NoteItUser', algorithms=['HS256'])
+    except Exception as identifier:
+        return custom_400('JWT INVALID')
+    # if valid ensure not expired token
+    expiration = datetime.fromtimestamp(payload['exp'])
     current_time = datetime.utcnow()
     if current_time <= expiration:
         return {'statusCode': 200}
     else:
-        return custom_400('JWT NOT VALID')
+        return custom_400('JWT EXPIRED')
 
 
 def create_user(body):

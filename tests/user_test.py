@@ -12,6 +12,8 @@ user_object2 = {"email": "test@NoteIt.com",
 user_object_bad = {"email": "test@NoteIt.com",
                    "password": "BAD PASSSWORD", "firstname": "Test", "surname": "Test Surname"}
 
+bad_jwt = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RATm90ZUl0LmNvbSIsImlhdCI6MTUxNjIzOTAyMn0.paCMHeNjrWR5N4t6_eWsZWxTfscugu2gIyacT8zVFyY'
+
 
 class UserTestCase(unittest.TestCase):
 
@@ -38,13 +40,15 @@ class UserTestCase(unittest.TestCase):
         # Need to handle redirect in above call
         self.assertEqual(response['statusCode'], 200)
 
-    # # Test Login
+    # Test Login
     def test_login(self):
         response = login(user_object)
         self.assertEqual(response['statusCode'], 200)
         jwt_response = response['token']
-        response = isAuthenticated({'jwt': jwt_response})
+        response = isAuthenticated(jwt_response)
         self.assertEqual(response['statusCode'], 200)
+        bad_jwt_response = isAuthenticated(bad_jwt)
+        self.assertEqual(bad_jwt_response['statusCode'], 400)
 
     # Test Failed Login
     def test_failed_login(self):

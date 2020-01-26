@@ -11,7 +11,7 @@ phases:
       - pip3 install pyjwt -t ./
   pre_build:
     commands:
-      - python -m unittest tests/user_test.py
+      - python -m unittest -v tests/user_test.py
   build:
     commands:
       - export BUCKET=builds-user-module
