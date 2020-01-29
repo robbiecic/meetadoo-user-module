@@ -66,7 +66,13 @@ def create_user(body):
         if return_user(email) == 0:
             # Send item to User table
             response = dynamodb_client.put_item(TableName='User', Item=item)
-            return {'statusCode': 200, 'response': str(response)}
+            expiry_time = datetime.utcnow() + timedelta(seconds=60 * 30)
+            encoded_jwt = jwt.encode(
+                {'email': email, 'exp': expiry_time}, 'NoteItUser', algorithm='HS256').decode('utf-8')
+            return_body = {}
+            return_body['email'] = email
+            return_body['jwt'] = encoded_jwt
+            return {'statusCode': 200, 'response': str(return_body)}
         else:
             return custom_400('ERROR: A user with this email address already exists.')
     except Exception as e:
