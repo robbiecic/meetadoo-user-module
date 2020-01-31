@@ -1,5 +1,7 @@
 import unittest
 from post import login, create_user, remove_user, update_user, isAuthenticated, return_user
+from index import lambda_handler
+
 import json
 
 # Data set up only for this unit test. WIll be teared down after
@@ -57,6 +59,16 @@ class UserTestCase(unittest.TestCase):
         # Need to handle redirect in above call
         self.assertEqual(response['statusCode'], 400)
 
+    # Test login from lambda function
+    def test_lambda_login(self):
+        context = ""
+        event = {}
+        event["body"] = {"data": user_object}
+        event["queryStringParameters"] = {}
+        event["queryStringParameters"]["action"] = "Login"
+        response = lambda_handler(event, context)
+        self.assertEqual(response['statusCode'], 200)
+
 # End of UserTestCase --------------------------------------------------------------------------------------------------------------------
 
 
@@ -67,6 +79,7 @@ def suite():  # Need to define a suite as setUp and tearDown are called per test
     suite.addTest(UserTestCase('test_update_user'))
     suite.addTest(UserTestCase('test_login'))
     suite.addTest(UserTestCase('test_failed_login'))
+    suite.addTest(UserTestCase('test_lambda_login'))
     return suite
 
 

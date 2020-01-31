@@ -12,6 +12,14 @@ url = "https://i6vtmh1eq3.execute-api.ap-southeast-2.amazonaws.com/Development"
 
 class E2ETestCase(unittest.TestCase):
 
+    # Remove user first if exists
+    def setUp(self):
+        try:
+            requests.post(url=url + "?action=RemoveUser", data=json.dumps(json_data), headers={
+                'content-type': 'application/json'})
+        except:
+            print('Had to remove user before running test')
+
     # Remove Test User
     @classmethod
     def tearDownClass(cls):

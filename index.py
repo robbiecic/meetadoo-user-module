@@ -7,8 +7,11 @@ def lambda_handler(event, context):
     # This API is driven off the query string parameter 'request_action'
     try:
         # For every request, we require a data object containing at least the email
-        bodydata = json.loads(event['body'])
-        action = event["queryStringParameters"]['action']
+        try:
+            bodydata = json.loads(event['body'])
+        except:
+            bodydata = event['body']
+        action = event['queryStringParameters']['action']
         body = bodydata['data']
         email = body['email']
     except Exception as identifier:
