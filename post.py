@@ -31,7 +31,9 @@ def login(body):
             expiry_time = datetime.utcnow() + timedelta(seconds=60 * 30)
             encoded_jwt = jwt.encode(
                 {'email': email, 'exp': expiry_time}, 'NoteItUser', algorithm='HS256').decode('utf-8')
-            return {'statusCode': 200, "token": str(encoded_jwt)}
+            return_body = {}
+            return_body["token"] = str(encoded_jwt)
+            return {'statusCode': 200, "response": return_body}
         else:
             return custom_400('PASSWORD DID NOT MATCH')
 
