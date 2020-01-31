@@ -32,8 +32,8 @@ def login(body):
             encoded_jwt = jwt.encode(
                 {'email': email, 'exp': expiry_time}, 'NoteItUser', algorithm='HS256').decode('utf-8')
             return_body = {}
-            return_body["token"] = str(encoded_jwt)
-            return {'statusCode': 200, "response": return_body}
+            return_body["token"] = encoded_jwt
+            return {'statusCode': 200, 'response': str(return_body)}
         else:
             return custom_400('PASSWORD DID NOT MATCH')
 

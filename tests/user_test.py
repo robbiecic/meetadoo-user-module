@@ -47,7 +47,8 @@ class UserTestCase(unittest.TestCase):
         response = login(user_object)
         self.assertEqual(response['statusCode'], 200)
         response_body = response['response']
-        jwt_response = response_body['token']
+        a = json.loads(response_body.replace("'", '"'))
+        jwt_response = a['token']
         response = isAuthenticated(jwt_response)
         self.assertEqual(response['statusCode'], 200)
         bad_jwt_response = isAuthenticated(bad_jwt)
