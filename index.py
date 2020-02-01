@@ -4,6 +4,8 @@ from post import create_user, remove_user, login
 
 def lambda_handler(event, context):
 
+    print('Event Received - ' + str(event))
+    print('Context Received - ' + str(context))
     # This API is driven off the query string parameter 'request_action'
     try:
         # For every request, we require a data object containing at least the email
@@ -11,6 +13,7 @@ def lambda_handler(event, context):
             bodydata = json.loads(event['body'])
         except:
             bodydata = event['body']
+
         action = event['queryStringParameters']['action']
         body = bodydata['data']
         email = body['email']
