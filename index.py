@@ -5,6 +5,8 @@ from post import create_user, remove_user, login
 def lambda_handler(event, context):
 
     print('Event Received - ' + str(event))
+    print('Event queryStringParameters - ' +
+          str(event['queryStringParameters']))
     print('Context Received - ' + str(context))
     # This API is driven off the query string parameter 'request_action'
     try:
