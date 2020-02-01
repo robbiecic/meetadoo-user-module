@@ -33,7 +33,8 @@ def login(body):
                 {'email': email, 'exp': expiry_time}, 'NoteItUser', algorithm='HS256').decode('utf-8')
             return_body = {}
             return_body["token"] = encoded_jwt
-            return {'statusCode': 200, 'response': str(return_body)}
+            cookie_string = set_cookie(encoded_jwt)
+            return {'cookie': cookie_string, 'statusCode': 200, 'response': str(return_body)}
         else:
             return custom_400('PASSWORD DID NOT MATCH')
 
@@ -74,7 +75,8 @@ def create_user(body):
             return_body = {}
             return_body['email'] = email
             return_body['jwt'] = encoded_jwt
-            return {'statusCode': 200, 'response': str(return_body)}
+            cookie_string = set_cookie(encoded_jwt)
+            return {'cookie': cookie_string, 'statusCode': 200, 'response': str(return_body)}
         else:
             return custom_400('ERROR: A user with this email address already exists.')
     except Exception as e:
@@ -122,6 +124,15 @@ def return_user(email_address):
 
 def custom_400(message):
     return {'statusCode': 400, 'response': message}
+
+
+def set_cookie(jwt):
+    # Delete the cookie after 1 day
+    expires = datetime.utcnow() + timedelta(seconds=60 * 60 * 24)
+    cookie_string = 'jwt=' + \
+        str(jwt) + ';  expires=' + \
+        str(expires) + "; httpOnly: true"
+    return cookie_string
 
 
 def encrypt_string(string_to_encrypt):
