@@ -65,9 +65,18 @@ class UserTestCase(unittest.TestCase):
         event['httpMethod'] = 'POST'
         response = lambda_handler(event, context)
         self.assertEqual(response['statusCode'], 200)
+
+    # Test get User from Lambda function
+    def test_lambda_getUser(self):
         # Will test get user now, but cookie isn't valid so should receive a 400
+        context = ""
+        event = {}
+        event["body"] = {"data": user_object}
+        event["queryStringParameters"] = {}
         event['httpMethod'] = 'GET'
         event["queryStringParameters"]["action"] = 'getUser'
+        event["headers"] = {
+            'Cookie': 'jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3Q1QHRlc3QuY29tIiwiZXhwIjoxNTgwNTgxODc2fQ.iuyFn7JZ4Ux8CQ0_EB9xotA2uyERM0csiZYZ-zOqUOQ'}
         response = lambda_handler(event, context)
         self.assertEqual(response['statusCode'], 400)
 
@@ -88,6 +97,7 @@ def suite():  # Need to define a suite as setUp and tearDown are called per test
     suite.addTest(UserTestCase('test_login'))
     suite.addTest(UserTestCase('test_failed_login'))
     suite.addTest(UserTestCase('test_lambda_login'))
+    suite.addTest(UserTestCase('test_lambda_getUser'))
     suite.addTest(UserTestCase('test_get_user'))
     return suite
 
