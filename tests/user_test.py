@@ -62,10 +62,11 @@ class UserTestCase(unittest.TestCase):
         event["queryStringParameters"]["action"] = 'Login'
         event["headers"] = {
             'Cookie': 'jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3Q1QHRlc3QuY29tIiwiZXhwIjoxNTgwNTgxODc2fQ.iuyFn7JZ4Ux8CQ0_EB9xotA2uyERM0csiZYZ-zOqUOQ'}
-
+        event['httpMethod'] = 'POST'
         response = lambda_handler(event, context)
         self.assertEqual(response['statusCode'], 200)
         # Will test get user now, but cookie isn't valid so should receive a 400
+        event['httpMethod'] = 'GET'
         event["queryStringParameters"]["action"] = 'getUser'
         response = lambda_handler(event, context)
         self.assertEqual(response['statusCode'], 400)

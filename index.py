@@ -5,29 +5,41 @@ from user_functions import create_user, remove_user, login, get_user, isAuthenti
 def lambda_handler(event, context):
     # This API is driven off the query string parameter 'request_action'
     print('Event details- ', str(event))
-    try:
-        # For every request, we require a data object containing at least the email
-        try:
-            bodydata = json.loads(event['body'])
-        except:
-            bodydata = event['body']
 
-        action = event['queryStringParameters']['action']
+    # This will always be hear as defined by API Gateway rule
+    action = event['queryStringParameters']['action']
+
+    # If POST then get body
+    if event['httpMethod'] == 'POST':
+        # Try setting event body, fail if doesn't exist
+        try:
+            # For every request, we require a data object containing at least the email
+            try:
+                bodydata = json.loads(event['body'])
+            except:
+                bodydata = event['body']
+        except Exception as identifier:
+            return {
+                'statusCode': 400,
+                'body': 'Body Not formed properly' + str(identifier)
+            }
+        # Set body data
         body = bodydata['data']
         email = body['email']
 
-        # Locate cookie details if there, if not ignore
+    # If GET, get data from queryStringParameters
+    elif event['httpMethod'] == 'GET':
         try:
-            cookie = event['headers']['Cookie']
-            jwt_token = cookie.replace("jwt=", "")
+            email = event['queryStringParameters']['email']
         except:
-            pass
+            email = ""
 
-    except Exception as identifier:
-        return {
-            'statusCode': 400,
-            'body': 'Body Not formed properly' + str(identifier)
-        }
+    # Locate cookie details if there, if not ignore
+    try:
+        cookie = event['headers']['Cookie']
+        jwt_token = cookie.replace("jwt=", "")
+    except:
+        jwt_token = "Something Invalid"
 
     # Enter if statement block to route message
     if (action == 'CreateUser'):
