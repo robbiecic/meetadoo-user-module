@@ -131,10 +131,11 @@ def custom_400(message):
 
 def set_cookie(jwt):
     # Delete the cookie after 1 day
-    expires = datetime.utcnow() + timedelta(seconds=60 * 60 * 24)
+    expires = (datetime.utcnow() +
+               timedelta(seconds=60 * 60 * 24)).strftime("%a, %d %b %Y %H:%M:%S GMT")
     cookie_string = 'jwt=' + \
         str(jwt) + ';  expires=' + \
-        str(expires) + "; httpOnly: true"
+        str(expires) + "; Secure; HttpOnly"
     return cookie_string
 
 
