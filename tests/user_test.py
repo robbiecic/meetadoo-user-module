@@ -66,7 +66,7 @@ class UserTestCase(unittest.TestCase):
         event = {}
         event["body"] = {"data": user_object}
         event["queryStringParameters"] = {}
-        event["queryStringParameters"]["action"] = "Login"
+        event["queryStringParameters"]["querystring"] = {'action': 'Login'}
         response = lambda_handler(event, context)
         self.assertEqual(response['statusCode'], 200)
 
