@@ -4,6 +4,7 @@ from user_functions import create_user, remove_user, login, get_user
 
 def lambda_handler(event, context):
     # This API is driven off the query string parameter 'request_action'
+    print('Event details- ', str(event))
     try:
         # For every request, we require a data object containing at least the email
         try:
