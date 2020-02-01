@@ -53,7 +53,7 @@ def isAuthenticated(encoded_jwt):
     if current_time <= expiration:
         return {'statusCode': 200}
     else:
-        return custom_400('JWT EXPIRED')
+        return custom_400('Token expired or not valid')
 
 
 def create_user(body):

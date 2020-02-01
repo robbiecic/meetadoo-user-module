@@ -1,5 +1,5 @@
 import json
-from user_functions import create_user, remove_user, login, get_user
+from user_functions import create_user, remove_user, login, get_user, isAuthenticated
 
 
 def lambda_handler(event, context):
@@ -15,6 +15,14 @@ def lambda_handler(event, context):
         action = event['queryStringParameters']['action']
         body = bodydata['data']
         email = body['email']
+
+        # Locate cookie details if there, if not ignore
+        try:
+            cookie = event['headers']['Cookie']
+            jwt_token = cookie.replace("jwt=", "")
+        except:
+            pass
+
     except Exception as identifier:
         return {
             'statusCode': 400,
@@ -55,11 +63,15 @@ def lambda_handler(event, context):
             'body': result['response']
         }
     elif (action == 'getUser'):
-        result = get_user(email)
-        return {
-            'statusCode': result['statusCode'],
-            'body': result['response']
-        }
+        authenticated_response = isAuthenticated(jwt_token)
+        if authenticated_response['statusCode'] == 200:
+            result = get_user(email)
+            return {
+                'statusCode': result['statusCode'],
+                'body': result['response']
+            }
+        else:
+            return authenticated_response
     else:
         return {
             'statusCode': 400,
