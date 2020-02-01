@@ -32,7 +32,9 @@ def login(body):
             encoded_jwt = jwt.encode(
                 {'email': email, 'exp': expiry_time}, 'NoteItUser', algorithm='HS256').decode('utf-8')
             return_body = {}
-            return_body["token"] = encoded_jwt
+            return_body["firstname"] = user_details['first_name']['S']
+            return_body["surname"] = user_details['surname']['S']
+            return_body["email"] = email
             cookie_string = set_cookie(encoded_jwt)
             return {'cookie': cookie_string, 'statusCode': 200, 'response': str(return_body)}
         else:
@@ -73,8 +75,9 @@ def create_user(body):
             encoded_jwt = jwt.encode(
                 {'email': email, 'exp': expiry_time}, 'NoteItUser', algorithm='HS256').decode('utf-8')
             return_body = {}
-            return_body['email'] = email
-            return_body['jwt'] = encoded_jwt
+            return_body["firstname"] = firstname
+            return_body["surname"] = surname
+            return_body["email"] = email
             cookie_string = set_cookie(encoded_jwt)
             return {'cookie': cookie_string, 'statusCode': 200, 'response': str(return_body)}
         else:
