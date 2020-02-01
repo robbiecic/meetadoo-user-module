@@ -1,5 +1,5 @@
 import unittest
-from post import login, create_user, remove_user, update_user, isAuthenticated, return_user
+from user_functions import login, create_user, remove_user, update_user, isAuthenticated, return_user, get_user
 from index import lambda_handler
 
 import json
@@ -30,7 +30,7 @@ class UserTestCase(unittest.TestCase):
         self.assertEqual(response['statusCode'], 200)
 
     # # Get Test User
-    def test_get_user(self):
+    def test_return_user(self):
         response = return_user(user_object['email'])
         email_start = str(response).find('email_address', 0)
         # If email address key is found in the return string, then it successfully finds the email
@@ -46,14 +46,6 @@ class UserTestCase(unittest.TestCase):
     def test_login(self):
         response = login(user_object)
         self.assertEqual(response['statusCode'], 200)
-        # The below tests don't work anymore as I stripped out jwt from the body and put in a http cookie
-        # response_body = response['response']
-        # a = json.loads(response_body.replace("'", '"'))
-        # jwt_response = a['token']
-        # response = isAuthenticated(jwt_response)
-        # self.assertEqual(response['statusCode'], 200)
-        # bad_jwt_response = isAuthenticated(bad_jwt)
-        # self.assertEqual(bad_jwt_response['statusCode'], 400)
 
     # Test Failed Login
     def test_failed_login(self):
@@ -71,17 +63,24 @@ class UserTestCase(unittest.TestCase):
         response = lambda_handler(event, context)
         self.assertEqual(response['statusCode'], 200)
 
+    def test_get_user(self):
+        response = get_user(user_object['email'])
+        self.assertEqual(response['statusCode'], 200)
+        response_data = json.loads(response['response'].replace("'", '"'))
+        self.assertEqual(response_data['email'], user_object['email'])
+
 # End of UserTestCase --------------------------------------------------------------------------------------------------------------------
 
 
 def suite():  # Need to define a suite as setUp and tearDown are called per test otherwise
     suite = unittest.TestSuite()
     suite.addTest(UserTestCase('test_create_user'))
-    suite.addTest(UserTestCase('test_get_user'))
+    suite.addTest(UserTestCase('test_return_user'))
     suite.addTest(UserTestCase('test_update_user'))
     suite.addTest(UserTestCase('test_login'))
     suite.addTest(UserTestCase('test_failed_login'))
     suite.addTest(UserTestCase('test_lambda_login'))
+    suite.addTest(UserTestCase('test_get_user'))
     return suite
 
 

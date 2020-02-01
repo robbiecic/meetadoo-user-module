@@ -114,6 +114,18 @@ def remove_user(email):
         return custom_400('No User found')
 
 
+def get_user(email_address):
+    user = return_user(email_address)
+    return_body = {}
+    return_body["firstname"] = user['first_name']['S']
+    return_body["surname"] = user['surname']['S']
+    return_body["email"] = email_address
+    if user != 0:
+        return {'statusCode': 200, 'response': str(return_body)}
+    else:
+        return custom_400('No User found')
+
+
 def return_user(email_address):
     response = dynamodb_client.get_item(
         TableName='User', Key={'email_address': {'S': email_address}})

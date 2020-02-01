@@ -1,5 +1,5 @@
 import json
-from post import create_user, remove_user, login
+from user_functions import create_user, remove_user, login, get_user
 
 
 def lambda_handler(event, context):
@@ -49,6 +49,12 @@ def lambda_handler(event, context):
         }
     elif (action == 'UpdateUser'):
         result = update_user(body)
+        return {
+            'statusCode': result['statusCode'],
+            'body': result['response']
+        }
+    elif (action == 'getUser'):
+        result = get_user(email)
         return {
             'statusCode': result['statusCode'],
             'body': result['response']
