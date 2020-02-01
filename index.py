@@ -3,9 +3,6 @@ from post import create_user, remove_user, login
 
 
 def lambda_handler(event, context):
-
-    print('Event Received - ' + str(event))
-    print('Context Received - ' + str(context))
     # This API is driven off the query string parameter 'request_action'
     try:
         # For every request, we require a data object containing at least the email
@@ -14,9 +11,7 @@ def lambda_handler(event, context):
         except:
             bodydata = event['body']
 
-        query_string_parameters = event['queryStringParameters']
-        query_string = query_string_parameters['querystring']
-        action = query_string['action']
+        action = event['queryStringParameters']['action']
         body = bodydata['data']
         email = body['email']
     except Exception as identifier:
@@ -29,7 +24,7 @@ def lambda_handler(event, context):
     if (action == 'CreateUser'):
         result = create_user(body)
         return {
-            'cookie': result['cookie'],
+            "headers": {"Set-Cookie": result['cookie']},
             'statusCode': result['statusCode'],
             'body': result['response']
         }
@@ -42,7 +37,7 @@ def lambda_handler(event, context):
     elif (action == 'Login'):
         result = login(body)
         return {
-            'cookie': result['cookie'],
+            "headers": {"Set-Cookie": result['cookie']},
             'statusCode': result['statusCode'],
             'body': result['response']
         }
