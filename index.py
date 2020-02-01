@@ -24,6 +24,7 @@ def lambda_handler(event, context):
     if (action == 'CreateUser'):
         result = create_user(body)
         return {
+            'cookie': result['cookie'],
             'statusCode': result['statusCode'],
             'body': result['response']
         }
@@ -36,6 +37,7 @@ def lambda_handler(event, context):
     elif (action == 'Login'):
         result = login(body)
         return {
+            'cookie': result['cookie'],
             'statusCode': result['statusCode'],
             'body': result['response']
         }
