@@ -36,7 +36,8 @@ def lambda_handler(event, context):
 
     # Locate cookie details if there, if not ignore
     try:
-        cookie = event['headers']['Cookie']
+        cookie = event['headers']['cookie']
+        print('Cookie - ' + str(cookie))
         jwt_token = cookie.replace("jwt=", "")
     except:
         jwt_token = "Something Invalid"
