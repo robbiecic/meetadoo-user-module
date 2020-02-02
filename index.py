@@ -78,7 +78,8 @@ def lambda_handler(event, context):
         authenticated_response = isAuthenticated(jwt_token)
         if authenticated_response['statusCode'] == 200:
             # Get email from decoded response. Don't want to store it on client side, but it's in the token which is issued upon successful login
-            body = json.loads(response['response'].replace("'", '"'))
+            body = json.loads(
+                authenticated_response['response'].replace("'", '"'))
             result = get_user(body.email)
             return {
                 'statusCode': result['statusCode'],
