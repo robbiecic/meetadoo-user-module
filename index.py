@@ -41,6 +41,8 @@ def lambda_handler(event, context):
     except:
         jwt_token = "Something Invalid"
 
+    print('jwt_token - ' + str(jwt_token))
+
     # Enter if statement block to route message
     if (action == 'CreateUser'):
         result = create_user(body)
