@@ -146,10 +146,10 @@ def set_cookie(jwt):
     expires = (datetime.utcnow() +
                timedelta(seconds=60 * 60 * 24)).strftime("%a, %d %b %Y %H:%M:%S GMT")
     # Will remove HttpOnly and see if that works
-
+    # Will take out secure for now, doesn't work in dev
     cookie_string = 'jwt=' + \
         str(jwt) + ';  expires=' + \
-        str(expires) + "; Secure; SameSite=None"
+        str(expires) + "; SameSite=None"
     return cookie_string
 
 
