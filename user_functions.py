@@ -145,12 +145,11 @@ def set_cookie(jwt):
     # Delete the cookie after 1 day
     expires = (datetime.utcnow() +
                timedelta(seconds=60 * 60 * 24)).strftime("%a, %d %b %Y %H:%M:%S GMT")
-    # Will set same-site to none, but should change for production
+    # Will remove HttpOnly and see if that works
 
     cookie_string = 'jwt=' + \
         str(jwt) + ';  expires=' + \
-        str(expires) + "; Secure; HttpOnly; " + \
-        "SameSite=None; Domain=.i6vtmh1eq3.execute-api.ap-southeast-2.amazonaws.com"
+        str(expires) + "; Secure"
     return cookie_string
 
 
