@@ -145,9 +145,11 @@ def set_cookie(jwt):
     # Delete the cookie after 1 day
     expires = (datetime.utcnow() +
                timedelta(seconds=60 * 60 * 24)).strftime("%a, %d %b %Y %H:%M:%S GMT")
+    # Will set same-site to none, but should change for production
+
     cookie_string = 'jwt=' + \
         str(jwt) + ';  expires=' + \
-        str(expires) + "; Secure; HttpOnly"
+        str(expires) + "; Secure; HttpOnly; " + "SameSite=None"
     return cookie_string
 
 
