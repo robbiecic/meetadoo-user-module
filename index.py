@@ -27,13 +27,6 @@ def lambda_handler(event, context):
         body = bodydata['data']
         email = body['email']
 
-    # If GET, get data from queryStringParameters
-    elif event['httpMethod'] == 'GET':
-        try:
-            email = event['queryStringParameters']['email']
-        except:
-            email = ""
-
     # Locate cookie details if there, if not ignore
     try:
         # 'cookie' is case sensistive. Is lower case from browser, upper care from Postman
@@ -84,7 +77,9 @@ def lambda_handler(event, context):
     elif (action == 'getUser'):
         authenticated_response = isAuthenticated(jwt_token)
         if authenticated_response['statusCode'] == 200:
-            result = get_user(email)
+            # Get email from decoded response. Don't want to store it on client side, but it's in the token which is issued upon successful login
+            body = json.loads(response['response'].replace("'", '"'))
+            result = get_user(body.email)
             return {
                 'statusCode': result['statusCode'],
                 'body': result['response']

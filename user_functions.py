@@ -51,7 +51,7 @@ def isAuthenticated(encoded_jwt):
     expiration = datetime.fromtimestamp(payload['exp'])
     current_time = datetime.utcnow()
     if current_time <= expiration:
-        return {'statusCode': 200}
+        return {'statusCode': 200, 'response': str(payload['email'])}
     else:
         return custom_400('Token expired or not valid')
 
@@ -129,7 +129,7 @@ def get_user(email_address):
 def return_user(email_address):
     response = dynamodb_client.get_item(
         TableName='User', Key={'email_address': {'S': email_address}})
-    # Check if an user exists
+    # Check if an user existsx
     try:
         user = response['Item']
         return user
