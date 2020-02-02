@@ -36,7 +36,11 @@ def lambda_handler(event, context):
 
     # Locate cookie details if there, if not ignore
     try:
-        cookie = event['headers']['cookie']
+        # 'cookie' is case sensistive. Is lower case from browser, upper care from Postman
+        try:
+            cookie = event['headers']['cookie']
+        except:
+            cookie = event['headers']['Cookie']
         print('Cookie - ' + str(cookie))
         jwt_token = cookie.replace("jwt=", "")
     except:
