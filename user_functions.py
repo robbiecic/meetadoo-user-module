@@ -149,7 +149,7 @@ def set_cookie(jwt):
 
     cookie_string = 'jwt=' + \
         str(jwt) + ';  expires=' + \
-        str(expires) + "; Secure; SameSite: None"
+        str(expires) + "; Secure; SameSite=None"
     return cookie_string
 
 
