@@ -45,7 +45,7 @@ def lambda_handler(event, context):
     if (action == 'CreateUser'):
         result = create_user(body)
         return {
-            "headers": {"Set-Cookie": result['cookie'], "Access-Control-Allow-Origin": "http://localhost:8080"},
+            "headers": {"Set-Cookie": result['cookie'], "Access-Control-Allow-Origin": "http://localhost:8080", "Access-Control-Allow-Credentials": "true"},
             'statusCode': result['statusCode'],
             'body': result['response']
         }
@@ -58,7 +58,7 @@ def lambda_handler(event, context):
     elif (action == 'Login'):
         result = login(body)
         return {
-            "headers": {"Set-Cookie": result['cookie'], "Access-Control-Allow-Origin": "http://localhost:8080"},
+            "headers": {"Set-Cookie": result['cookie'], "Access-Control-Allow-Origin": "http://localhost:8080", "Access-Control-Allow-Credentials": "true"},
             'statusCode': result['statusCode'],
             'body': result['response']
         }
