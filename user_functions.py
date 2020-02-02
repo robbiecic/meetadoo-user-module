@@ -149,7 +149,8 @@ def set_cookie(jwt):
 
     cookie_string = 'jwt=' + \
         str(jwt) + ';  expires=' + \
-        str(expires) + "; Secure; HttpOnly; " + "SameSite=None"
+        str(expires) + "; Secure; HttpOnly; " + \
+        "SameSite=None; Domain=.i6vtmh1eq3.execute-api.ap-southeast-2.amazonaws.com"
     return cookie_string
 
 
