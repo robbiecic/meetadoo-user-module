@@ -149,7 +149,7 @@ def set_cookie(jwt):
     # Will take out secure for now, doesn't work in dev
     cookie_string = 'jwt=' + \
         str(jwt) + ';  expires=' + \
-        str(expires) + "; SameSite=None"
+        str(expires) + "; SameSite=None; Path=/"
     return cookie_string
 
 
