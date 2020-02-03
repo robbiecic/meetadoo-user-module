@@ -1,5 +1,5 @@
 import json
-from user_functions import create_user, remove_user, login, get_user, isAuthenticated
+from user_functions import create_user, remove_user, login, get_user, isAuthenticated, update_user
 
 
 def lambda_handler(event, context):
