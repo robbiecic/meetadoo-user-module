@@ -63,7 +63,7 @@ def lambda_handler(event, context):
             'body': result['response']
         }
     elif (action == 'isAuthenticated'):
-        result = isAuthenticated(body)
+        result = isAuthenticated(jwt_token)
         return {
             'statusCode': result['statusCode'],
             'body': result['response']
