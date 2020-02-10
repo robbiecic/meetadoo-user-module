@@ -7,10 +7,13 @@ import jwt
 import base64
 from datetime import datetime
 from datetime import timedelta
+from boto3.dynamodb.conditions import Key, Attr
 
 
 # Create dynamodb instance
 dynamodb_client = aws.create_dynamodb_client()
+dynamodb_resource = aws.create_dynamodb_resource()
+table = dynamodb_resource.Table('User')
 
 # Set Master key for cryptography
 master_secret_key = 'RobboSecretKey123'
@@ -124,6 +127,20 @@ def get_user(email_address):
         return {'statusCode': 200, 'response': str(return_body)}
     else:
         return custom_400('No User found')
+
+
+def get_user_list():
+    users_returns = table.scan(ProjectionExpression="email_address")
+    my_list = []
+    try:
+        users_returns['Items']
+    except:
+        return custom_400('No User found')
+
+    for x in users_returns['Items']:
+        my_list.append(x['email_address'])
+
+    return {'statusCode': 200, 'response': my_list}
 
 
 def return_user(email_address):

@@ -1,5 +1,5 @@
 import json
-from user_functions import create_user, remove_user, login, get_user, isAuthenticated, update_user
+from user_functions import create_user, remove_user, login, get_user, isAuthenticated, update_user, get_user_list
 
 
 def lambda_handler(event, context):
@@ -82,6 +82,18 @@ def lambda_handler(event, context):
             # Get email from decoded response. Don't want to store it on client side, but it's in the token which is issued upon successful login
             body_email = authenticated_response['response']
             result = get_user(body_email)
+            return {
+                'statusCode': result['statusCode'],
+                'body': result['response']
+            }
+        else:
+            return authenticated_response
+    elif (action == 'getUserList'):
+        authenticated_response = isAuthenticated(jwt_token)
+        if authenticated_response['statusCode'] == 200:
+            print('User pass authentication with response ' +
+                  str(authenticated_response))
+            result = get_user_list()
             return {
                 'statusCode': result['statusCode'],
                 'body': result['response']

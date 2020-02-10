@@ -1,5 +1,5 @@
 import unittest
-from user_functions import login, create_user, remove_user, update_user, isAuthenticated, return_user, get_user
+from user_functions import login, create_user, remove_user, update_user, isAuthenticated, return_user, get_user, get_user_list
 from index import lambda_handler
 
 import json
@@ -86,6 +86,10 @@ class UserTestCase(unittest.TestCase):
         response_data = json.loads(response['response'].replace("'", '"'))
         self.assertEqual(response_data['email'], user_object['email'])
 
+    def test_get_user_list(self):
+        response = get_user_list()
+        self.assertEqual(response['statusCode'], 200)
+
 # End of UserTestCase --------------------------------------------------------------------------------------------------------------------
 
 
@@ -99,6 +103,7 @@ def suite():  # Need to define a suite as setUp and tearDown are called per test
     suite.addTest(UserTestCase('test_lambda_login'))
     suite.addTest(UserTestCase('test_lambda_getUser'))
     suite.addTest(UserTestCase('test_get_user'))
+    suite.addTest(UserTestCase('test_get_user_list'))
     return suite
 
 
