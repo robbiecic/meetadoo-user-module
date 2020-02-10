@@ -140,7 +140,7 @@ def get_user_list():
     for x in users_returns['Items']:
         my_list.append(x['email_address'])
 
-    return {'statusCode': 200, 'response': my_list}
+    return {'statusCode': 200, 'response': str(my_list)}
 
 
 def return_user(email_address):
