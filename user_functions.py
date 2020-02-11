@@ -133,6 +133,9 @@ def get_user_list():
     users_returns = table.scan(
         ProjectionExpression="email_address, first_name, surname")
     my_list = []
+    email_only_list = []
+    name_only_list = []
+
     try:
         users_returns['Items']
     except:
@@ -140,10 +143,15 @@ def get_user_list():
 
     for x in users_returns['Items']:
         my_list.append({"email": x['email_address'],
-                        "name": x['first_name']+' '+x['surname'],
-                        "avatar": x['first_name'][0]+x['surname'][0]})
+                        "name": x['first_name'] + ' ' + x['surname'],
+                        "avatar": x['first_name'][0] + x['surname'][0]})
+        email_only_list.append(x['email_address'])
+        name_only_list.append(x['first_name'] + ' ' + x['surname'])
 
-    return {'statusCode': 200, 'response': str(my_list)}
+    response_list = {"link_list": my_list,
+                     "email_only": email_only_list, "name_only": name_only_list}
+
+    return {'statusCode': 200, 'response': str(response_list)}
 
 
 def return_user(email_address):
