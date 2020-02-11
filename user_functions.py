@@ -130,7 +130,8 @@ def get_user(email_address):
 
 
 def get_user_list():
-    users_returns = table.scan(ProjectionExpression="email_address")
+    users_returns = table.scan(
+        ProjectionExpression="email_address, first_name, surname")
     my_list = []
     try:
         users_returns['Items']
@@ -138,7 +139,9 @@ def get_user_list():
         return custom_400('No User found')
 
     for x in users_returns['Items']:
-        my_list.append(x['email_address'])
+        my_list.append({"email": x['email_address'],
+                        "name": x['first_name']+' '+x['surname'],
+                        "avatar": x['first_name'][0]+x['surname'][0]})
 
     return {'statusCode': 200, 'response': str(my_list)}
 
