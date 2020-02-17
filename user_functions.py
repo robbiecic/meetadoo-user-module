@@ -186,7 +186,7 @@ def set_expired_cookie():
     # Set Expiry to 1 day ago
     expires = (datetime.utcnow() -
                timedelta(seconds=60 * 60 * 24)).strftime("%a, %d %b %Y %H:%M:%S GMT")
-    cookie_string = 'jwt=' + jwt + ';  expires=' + \
+    cookie_string = 'jwt=' + str(jwt) + ';  expires=' + \
         str(expires) + "; SameSite=None; Path=/"
     return cookie_string
 
