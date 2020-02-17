@@ -181,6 +181,16 @@ def set_cookie(jwt):
     return cookie_string
 
 
+def set_expired_cookie():
+    jwt = "Empty"
+    # Set Expiry to 1 day ago
+    expires = (datetime.utcnow() -
+               timedelta(seconds=60 * 60 * 24)).strftime("%a, %d %b %Y %H:%M:%S GMT")
+    cookie_string = 'jwt=' + jwt + ';  expires=' + \
+        str(expires) + "; SameSite=None; Path=/"
+    return cookie_string
+
+
 def encrypt_string(string_to_encrypt):
     salt = bcrypt.gensalt()
     combo_password = string_to_encrypt.encode(

@@ -1,5 +1,5 @@
 import json
-from user_functions import create_user, remove_user, login, get_user, isAuthenticated, update_user, get_user_list
+from user_functions import create_user, remove_user, login, get_user, isAuthenticated, update_user, get_user_list, set_expired_cookie
 
 
 def lambda_handler(event, context):
@@ -55,12 +55,19 @@ def lambda_handler(event, context):
             'statusCode': result['statusCode'],
             'body': result['response']
         }
-    elif (action == 'Login'):
+    elif (action == 'Login' and event['httpMethod'] == 'POST'):
         result = login(body)
         return {
             "headers": {"Set-Cookie": result['cookie'], "Access-Control-Allow-Origin": "http://localhost:8080", "Access-Control-Allow-Credentials": "true"},
             'statusCode': result['statusCode'],
             'body': result['response']
+        }
+    elif (action == 'Logout' and event['httpMethod'] == 'POST'):
+        expired_cookie = set_expired_cookie()
+        return {
+            "headers": {"Set-Cookie": expired_cookie, "Access-Control-Allow-Origin": "http://localhost:8080", "Access-Control-Allow-Credentials": "true"},
+            'statusCode': "200",
+            'body': "You are now logged out"
         }
     elif (action == 'isAuthenticated'):
         result = isAuthenticated(jwt_token)
