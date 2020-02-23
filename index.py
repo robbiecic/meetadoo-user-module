@@ -11,7 +11,7 @@ def lambda_handler(event, context):
 
     # Check origin - add header if valid origin
     if event['httpMethod'] == 'POST':
-       origin = event['headers']['origin']
+        origin = event['headers']['origin']
     else:
         origin = event['headers']['referer']
     header = {}
@@ -27,9 +27,9 @@ def lambda_handler(event, context):
     header["Access-Control-Allow-Credentials"] = "true"
 
     # If POST then get body
-    if event['httpMethod'] == 'POST'
-       # Try setting event body, fail if doesn't exist
-       try:
+    if event['httpMethod'] == 'POST':
+        # Try setting event body, fail if doesn't exist
+        try:
             # For every request, we require a data object containing at least the email
             try:
                 bodydata = json.loads(event['body'])
