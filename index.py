@@ -45,19 +45,24 @@ def lambda_handler(event, context):
         email = body['email']
 
     # Locate cookie details if there, if not ignore
+    jwt_token = "Something Invalid"
     try:
         # 'cookie' is case sensistive. Is lower case from browser, upper care from Postman
         try:
             cookie = event['headers']['cookie']
         except:
-            cookie = event['headers']['Cookie']
+            cookie = event['headers']['cookie']
         print('Cookie - ' + str(cookie))
         # Had to add this as running through AWS, different cookies are added. We want the one starting with jwt
         split_cookie = str(cookie).split(';')
         for x in split_cookie:
-            index = x.index('jwt')
-            if index > -1:
-                jwt_token = x.replace("jwt=", "")
+            try:
+                index = str(x).index("jwt")
+                jwt_token = x.replace("jwt", "").replace(
+                    " ", "").replace("=", "")
+            except:
+                # Ignore, index will throw an error meaning the "jwt" doesn't exist
+                pass
     except:
         jwt_token = "Something Invalid"
 
