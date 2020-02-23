@@ -52,7 +52,12 @@ def lambda_handler(event, context):
         except:
             cookie = event['headers']['Cookie']
         print('Cookie - ' + str(cookie))
-        jwt_token = cookie.replace("jwt=", "")
+        # Had to add this as running through AWS, different cookies are added. We want the one starting with jwt
+        split_cookie = str(cookie).split(';')
+        for x in split_cookie:
+            index = x.index('jwt')
+            if index > -1:
+                jwt_token = x.replace("jwt=", "")
     except:
         jwt_token = "Something Invalid"
 
