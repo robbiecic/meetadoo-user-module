@@ -10,12 +10,16 @@ def lambda_handler(event, context):
     action = event['queryStringParameters']['action']
 
     # Check origin - add header if valid origin
+    if event['httpMethod'] == 'POST'
+       origin = event['headers']['origin']
+    else:
+        origin = event['headers']['referer']
     header = {}
-    if event['headers']['origin'] == "https://dh8knvr6m97wx.cloudfront.net":
+    if origin == "https://dh8knvr6m97wx.cloudfront.net":
         header["Access-Control-Allow-Origin"] = "https://dh8knvr6m97wx.cloudfront.net"
-    elif event['headers']['origin'] == "https://localhost:8080":
+    elif origin == "https://localhost:8080":
         header["Access-Control-Allow-Origin"] = "https://localhost:8080"
-    elif event['headers']['origin'] == "http://localhost:8080":
+    elif origin == "http://localhost:8080":
         header["Access-Control-Allow-Origin"] = "http://localhost:8080"
     else:
         header["Access-Control-Allow-Origin"] = "https://dh8knvr6m97wx.cloudfront.net"
@@ -23,9 +27,9 @@ def lambda_handler(event, context):
     header["Access-Control-Allow-Credentials"] = "true"
 
     # If POST then get body
-    if event['httpMethod'] == 'POST':
-        # Try setting event body, fail if doesn't exist
-        try:
+    if event['httpMethod'] == 'POST'
+       # Try setting event body, fail if doesn't exist
+       try:
             # For every request, we require a data object containing at least the email
             try:
                 bodydata = json.loads(event['body'])
