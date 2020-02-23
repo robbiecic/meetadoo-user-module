@@ -9,6 +9,12 @@ def lambda_handler(event, context):
     # This will always be hear as defined by API Gateway rule
     action = event['queryStringParameters']['action']
 
+    # Set headers
+    header = {}
+    header["Access-Control-Allow-Origin"] = ["https://dh8knvr6m97wx.cloudfront.net",
+                                             "http://localhost:8080"]
+    header["Access-Control-Allow-Credentials"] = "true"
+
     # If POST then get body
     if event['httpMethod'] == 'POST':
         # Try setting event body, fail if doesn't exist
@@ -44,8 +50,9 @@ def lambda_handler(event, context):
     # Enter if statement block to route message
     if (action == 'CreateUser'):
         result = create_user(body)
+        header["Set-Cookie"] = result['cookie']
         return {
-            "headers": {"Set-Cookie": result['cookie'], "Access-Control-Allow-Origin": "http://localhost:8080", "Access-Control-Allow-Credentials": "true"},
+            "headers": header,
             'statusCode': result['statusCode'],
             'body': result['response']
         }
@@ -57,15 +64,17 @@ def lambda_handler(event, context):
         }
     elif (action == 'Login' and event['httpMethod'] == 'POST'):
         result = login(body)
+        header["Set-Cookie"] = result['cookie']
         return {
-            "headers": {"Set-Cookie": result['cookie'], "Access-Control-Allow-Origin": "http://localhost:8080", "Access-Control-Allow-Credentials": "true"},
+            "headers": header,
             'statusCode': result['statusCode'],
             'body': result['response']
         }
     elif (action == 'Logout' and event['httpMethod'] == 'POST'):
         expired_cookie = set_expired_cookie()
+        header["Set-Cookie"] = expired_cookie
         return {
-            "headers": {"Set-Cookie": expired_cookie, "Access-Control-Allow-Origin": "http://localhost:8080", "Access-Control-Allow-Credentials": "true"},
+            "headers": header,
             'statusCode': "200",
             'body': "You are now logged out"
         }
