@@ -110,6 +110,7 @@ def lambda_handler(event, context):
             body_email = authenticated_response['response']
             result = get_user(body_email)
             return {
+                'headers': header,
                 'statusCode': result['statusCode'],
                 'body': result['response']
             }
