@@ -9,20 +9,20 @@ def lambda_handler(event, context):
     # This will always be hear as defined by API Gateway rule
     action = event['queryStringParameters']['action']
 
-    # Check origin - add header if valid origin
-    if event['httpMethod'] == 'POST':
-        origin = event['headers']['origin']
-    else:
-        origin = event['headers']['referer']
-    header = {}
-    if origin == "https://dh8knvr6m97wx.cloudfront.net":
-        header["Access-Control-Allow-Origin"] = "https://dh8knvr6m97wx.cloudfront.net"
-    elif origin == "https://localhost:8080":
-        header["Access-Control-Allow-Origin"] = "https://localhost:8080"
-    elif origin == "http://localhost:8080":
-        header["Access-Control-Allow-Origin"] = "http://localhost:8080"
-    else:
-        header["Access-Control-Allow-Origin"] = "https://dh8knvr6m97wx.cloudfront.net"
+    # # Check origin - add header if valid origin
+    # if event['httpMethod'] == 'POST':
+    #     origin = event['headers']['origin']
+    # else:
+    #     origin = event['headers']['referer']
+    # header = {}
+    # if origin == "https://dh8knvr6m97wx.cloudfront.net":
+    #     header["Access-Control-Allow-Origin"] = "https://dh8knvr6m97wx.cloudfront.net"
+    # elif origin == "https://localhost:8080":
+    #     header["Access-Control-Allow-Origin"] = "https://localhost:8080"
+    # elif origin == "http://localhost:8080":
+    #     header["Access-Control-Allow-Origin"] = "http://localhost:8080"
+    # else:
+    #     header["Access-Control-Allow-Origin"] = "https://dh8knvr6m97wx.cloudfront.net"
 
     header["Access-Control-Allow-Credentials"] = "true"
 
