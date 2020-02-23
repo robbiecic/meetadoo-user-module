@@ -9,10 +9,15 @@ def lambda_handler(event, context):
     # This will always be hear as defined by API Gateway rule
     action = event['queryStringParameters']['action']
 
-    # Set headers
+    # Check origin - add header if valid origin
     header = {}
-    header["Access-Control-Allow-Origin"] = ["https://dh8knvr6m97wx.cloudfront.net",
-                                             "http://localhost:8080"]
+    if event['headers']['Host'] == "https://dh8knvr6m97wx.cloudfront.net":
+        header["Access-Control-Allow-Origin"] = "https://dh8knvr6m97wx.cloudfront.net"
+    elif event['headers']['Host'] == "http://localhost:8080":
+        header["Access-Control-Allow-Origin"] = "http://localhost:8080"
+    else:
+        header["Access-Control-Allow-Origin"] = "https://dh8knvr6m97wx.cloudfront.net"
+
     header["Access-Control-Allow-Credentials"] = "true"
 
     # If POST then get body
