@@ -62,7 +62,7 @@ class UserTestCase(unittest.TestCase):
         event["queryStringParameters"]["action"] = 'Login'
         event["headers"] = {
             'Cookie': 'jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3Q1QHRlc3QuY29tIiwiZXhwIjoxNTgwNTgxODc2fQ.iuyFn7JZ4Ux8CQ0_EB9xotA2uyERM0csiZYZ-zOqUOQ',
-            'Host': 'http://localhost:8080'}
+            'origin': 'http://localhost:8080'}
         event['httpMethod'] = 'POST'
         response = lambda_handler(event, context)
         self.assertEqual(response['statusCode'], 200)
@@ -78,7 +78,7 @@ class UserTestCase(unittest.TestCase):
         event["queryStringParameters"]["action"] = 'getUser'
         event["headers"] = {
             'Cookie': 'jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3Q1QHRlc3QuY29tIiwiZXhwIjoxNTgwNTgxODc2fQ.iuyFn7JZ4Ux8CQ0_EB9xotA2uyERM0csiZYZ-zOqUOQ',
-            'Host': 'http://localhost:8080'}
+            'origin': 'http://localhost:8080'}
         response = lambda_handler(event, context)
         self.assertEqual(response['statusCode'], 400)
 

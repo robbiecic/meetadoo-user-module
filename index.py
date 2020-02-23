@@ -11,9 +11,9 @@ def lambda_handler(event, context):
 
     # Check origin - add header if valid origin
     header = {}
-    if event['headers']['Host'] == "https://dh8knvr6m97wx.cloudfront.net":
+    if event['headers']['origin'] == "https://dh8knvr6m97wx.cloudfront.net":
         header["Access-Control-Allow-Origin"] = "https://dh8knvr6m97wx.cloudfront.net"
-    elif event['headers']['Host'] == "http://localhost:8080":
+    elif event['headers']['origin'] == "http://localhost:8080":
         header["Access-Control-Allow-Origin"] = "http://localhost:8080"
     else:
         header["Access-Control-Allow-Origin"] = "https://dh8knvr6m97wx.cloudfront.net"
