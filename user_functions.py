@@ -187,7 +187,7 @@ def set_expired_cookie():
     expires = (datetime.utcnow() -
                timedelta(seconds=60 * 60 * 24)).strftime("%a, %d %b %Y %H:%M:%S GMT")
     cookie_string = 'jwt=' + str(jwt) + ';  expires=' + \
-        str(expires) + "; SameSite=None; Path=/"
+        str(expires) + "; SameSite=None; Path=/; Max-Age=3600; Domain=.amazonaws.com; HttpOnly=True"
     return cookie_string
 
 
