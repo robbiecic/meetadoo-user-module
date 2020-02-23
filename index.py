@@ -10,7 +10,7 @@ def lambda_handler(event, context):
     action = event['queryStringParameters']['action']
 
     # Check origin - add header if valid origin
-    if event['httpMethod'] == 'POST'
+    if event['httpMethod'] == 'POST':
        origin = event['headers']['origin']
     else:
         origin = event['headers']['referer']
