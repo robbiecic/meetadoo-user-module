@@ -23,8 +23,8 @@ def lambda_handler(event, context):
     #     header["Access-Control-Allow-Origin"] = "http://localhost:8080"
     # else:
     #     header["Access-Control-Allow-Origin"] = "https://dh8knvr6m97wx.cloudfront.net"
-
-    header["Access-Control-Allow-Credentials"] = "true"
+    header = {}
+    # header["Access-Control-Allow-Credentials"] = "true"
 
     # If POST then get body
     if event['httpMethod'] == 'POST':
