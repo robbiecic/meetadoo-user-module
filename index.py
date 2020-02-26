@@ -51,7 +51,7 @@ def lambda_handler(event, context):
         try:
             cookie = event['headers']['cookie']
         except:
-            cookie = event['headers']['cookie']
+            cookie = event['headers']['Cookie']
         print('Cookie - ' + str(cookie))
         # Had to add this as running through AWS, different cookies are added. We want the one starting with jwt
         split_cookie = str(cookie).split(';')
