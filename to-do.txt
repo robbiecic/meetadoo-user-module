@@ -1,3 +1,0 @@
-1. Work out how to do documentation with API
-2. Establish an Alias API (domain)
-3. Build more unit and e2e tests
