@@ -15,8 +15,13 @@ dynamodb_client = aws.create_dynamodb_client()
 dynamodb_resource = aws.create_dynamodb_resource()
 table = dynamodb_resource.Table('User')
 
+
+# Read JSON data into the datastore variable
+with open('config.json') as json_file:
+    data = json.load(json_file)
+
 # Set Master key for cryptography
-master_secret_key = 'RobboSecretKey123'
+master_secret_key = data['secrets']['master']
 
 
 def login(body):
@@ -172,7 +177,7 @@ def custom_400(message):
 def set_cookie(jwt):
     # Delete the cookie after 1 day
     expires = (datetime.utcnow() +
-               timedelta(seconds=60 * 60 * 24)).strftime("%a, %d %b %Y %H:%M:%S GMT")
+               timedelta(seconds=60 * 60 * 24)).strftime("%a, %d %b %Y %H:%MM:%S GMT")
     # Will remove HttpOnly and see if that works
     # Will take out secure for now, doesn't work in dev
     cookie_string = 'jwt=' + \
