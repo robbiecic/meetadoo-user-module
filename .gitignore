@@ -1,2 +1,4 @@
-__pycache__
-# config.json
+__pycache__/
+archive/
+config.json
+aws.pyc
