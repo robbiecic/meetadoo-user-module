@@ -1,10 +1,10 @@
 {
-    "aws": {
-        "region_name": "ap-southeast-2",
-        "aws_access_key_id": "AKIAJVJV2E22WXY332VA",
-        "aws_secret_access_key": "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"
-    },
-    "secrets": {
-        "master": "RobboSecretKey123"
-    }
+  "aws": {
+    "region_name": "ap-southeast-2",
+    "aws_access_key_id": "AKIAI2BPLIHQVXLWSGCQ",
+    "aws_secret_access_key": "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"
+  },
+  "secrets": {
+    "master": "RobboSecretKey123"
+  }
 }
