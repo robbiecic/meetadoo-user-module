@@ -6,5 +6,9 @@
   },
   "secrets": {
     "master": "RobboSecretKey123"
+  },
+  "email_settings": {
+    "sender_email": "robert.cicero.rc@gmail.com",
+    "enabled": true
   }
 }
