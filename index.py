@@ -7,8 +7,8 @@ def lambda_handler(event, context):
     # This API is driven off the query string parameter 'request_action'
     # print('Event details- ', str(event))
     # Set parameters to pass into class
-    print('Context - ', context)
-    print('Event - ', event)
+    print('Context - ', str(context))
+    print('Event - ', str(event))
     header = {}
     try:
         body = json.loads(event['body'])
