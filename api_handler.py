@@ -9,7 +9,6 @@ class API_Handler:
         self.body = body
         self.header = header
         self.jwt = self.get_jwt()
-        self.email = self.get_email()
         self.authenticated_response = self.is_authenticated()
 
     def get_email(self):
@@ -93,7 +92,7 @@ class API_Handler:
         }
 
     def remove_user(self):
-        result = remove_user(self.email)
+        result = remove_user(self.get_email())
         return {
             'statusCode': result['statusCode'],
             'body': result['response']
