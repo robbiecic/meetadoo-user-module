@@ -15,6 +15,11 @@ user_object_bad = {"email": "test@NoteIt.com",
 
 bad_jwt = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RATm90ZUl0LmNvbSIsImlhdCI6MTUxNjIzOTAyMn0.paCMHeNjrWR5N4t6_eWsZWxTfscugu2gIyacT8zVFyY'
 
+with open('tests/event_login.json') as json_file:
+    event_login = json.load(json_file)
+with open('tests/event_auth.json') as json_file:
+    event_auth = json.load(json_file)
+
 
 class UserTestCase(unittest.TestCase):
 
@@ -54,31 +59,12 @@ class UserTestCase(unittest.TestCase):
 
     # Test login from lambda function
     def test_lambda_login(self):
-        context = ""
-        event = {}
-        event["body"] = {"data": user_object}
-        event["queryStringParameters"] = {}
-        event["queryStringParameters"]["action"] = 'Login'
-        event["headers"] = {
-            'Cookie': 'jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3Q1QHRlc3QuY29tIiwiZXhwIjoxNTgwNTgxODc2fQ.iuyFn7JZ4Ux8CQ0_EB9xotA2uyERM0csiZYZ-zOqUOQ',
-            'origin': 'http://localhost:8080'}
-        event['httpMethod'] = 'POST'
-        response = lambda_handler(event, context)
+        response = lambda_handler(event_login, "")
         self.assertEqual(response['statusCode'], 200)
 
     # Test get User from Lambda function
-    def test_lambda_getUser(self):
-        # Will test get user now, but cookie isn't valid so should receive a 400
-        context = ""
-        event = {}
-        event["body"] = {"data": user_object}
-        event["queryStringParameters"] = {}
-        event['httpMethod'] = 'GET'
-        event["queryStringParameters"]["action"] = 'getUser'
-        event["headers"] = {
-            'Cookie': 'jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3Q1QHRlc3QuY29tIiwiZXhwIjoxNTgwNTgxODc2fQ.iuyFn7JZ4Ux8CQ0_EB9xotA2uyERM0csiZYZ-zOqUOQ',
-            'referer': 'http://localhost:8080'}
-        response = lambda_handler(event, context)
+    def test_lambda_getAuth(self):
+        response = lambda_handler(event_auth, "")
         self.assertEqual(response['statusCode'], 400)
 
     def test_get_user(self):
@@ -102,7 +88,7 @@ def suite():  # Need to define a suite as setUp and tearDown are called per test
     suite.addTest(UserTestCase('test_login'))
     suite.addTest(UserTestCase('test_failed_login'))
     suite.addTest(UserTestCase('test_lambda_login'))
-    suite.addTest(UserTestCase('test_lambda_getUser'))
+    suite.addTest(UserTestCase('test_lambda_getAuth'))
     suite.addTest(UserTestCase('test_get_user'))
     suite.addTest(UserTestCase('test_get_user_list'))
     return suite
