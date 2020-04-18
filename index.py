@@ -8,7 +8,7 @@ def lambda_handler(event, context):
     # print('Event details- ', str(event))
     # Set parameters to pass into class
     print('Context - ', context)
-    print('Event - ', context)
+    print('Event - ', event)
     header = {}
     try:
         body = json.loads(event['body'])
