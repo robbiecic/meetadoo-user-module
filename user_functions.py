@@ -1,27 +1,21 @@
 
 import json
-import aws
-import json
 import bcrypt
 import jwt
 import base64
 from datetime import datetime
 from datetime import timedelta
 from boto3.dynamodb.conditions import Key, Attr
-
+from aws.aws import create_dynamodb_client, create_dynamodb_resource
+from aws.secrets import get_secrets
 
 # Create dynamodb instance
-dynamodb_client = aws.create_dynamodb_client()
-dynamodb_resource = aws.create_dynamodb_resource()
+dynamodb_client = create_dynamodb_client()
+dynamodb_resource = create_dynamodb_resource()
 table = dynamodb_resource.Table('User')
 
-
 # Read JSON data into the datastore variable
-with open('config.json') as json_file:
-    data = json.load(json_file)
-
-# Set Master key for cryptography
-master_secret_key = data['secrets']['master']
+data = json.loads(get_secrets())
 
 
 def login(body):
@@ -35,7 +29,7 @@ def login(body):
     else:
         hashed_password = user_details['password']['B']
         # Check if password matches
-        if bcrypt.checkpw(password + master_secret_key.encode('utf-8'), hashed_password):
+        if bcrypt.checkpw(password + data['hash_secret'].encode('utf-8'), hashed_password):
             expiry_time = datetime.utcnow() + timedelta(seconds=60 * 30)
             encoded_jwt = jwt.encode(
                 {'email': email, 'exp': expiry_time}, 'NoteItUser', algorithm='HS256').decode('utf-8')
@@ -201,6 +195,6 @@ def set_expired_cookie():
 def encrypt_string(string_to_encrypt):
     salt = bcrypt.gensalt()
     combo_password = string_to_encrypt.encode(
-        'utf-8') + master_secret_key.encode('utf-8')
+        'utf-8') + data['hash_secret'].encode('utf-8')
     hashed_password = bcrypt.hashpw(combo_password, salt)
     return hashed_password

@@ -3,7 +3,7 @@
 #
 # This file will create the new table store main user details in dynamodb
 
-import aws
+from aws.aws import *
 from botocore.exceptions import ClientError
 
 # Create dynamodb instance

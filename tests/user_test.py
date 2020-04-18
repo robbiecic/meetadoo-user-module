@@ -1,7 +1,6 @@
 import unittest
 from user_functions import login, create_user, remove_user, update_user, isAuthenticated, return_user, get_user, get_user_list
 from index import lambda_handler
-
 import json
 
 # Data set up only for this unit test. WIll be teared down after
