@@ -24,3 +24,4 @@ This micro service handles all user actions such as:
 - Need to revisit the code that strips out the JWT token from the header
 - Need to label build versions better
 - Need to incorporate static code analysis and security scanners
+- Build in a redis cache

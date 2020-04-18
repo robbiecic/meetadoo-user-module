@@ -49,7 +49,7 @@ class API_Handler:
         }
 
     def updateUser(self):
-        result = update_user(self.body)
+        result = update_user(self.body['data'])
         return {
             'statusCode': result['statusCode'],
             'body': result['response']
@@ -74,6 +74,7 @@ class API_Handler:
 
     def logout(self):
         expired_cookie = set_expired_cookie()
+        header = {}
         header["Set-Cookie"] = expired_cookie
         return {
             "headers": header,
