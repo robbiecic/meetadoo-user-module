@@ -47,9 +47,12 @@ class API_Handler:
     def confirm_email(self):
         result = validate_email(
             self.queryStringParameters['email'], self.queryStringParameters['token'])
-        # Redirect to register page after, need to think about passing success and fail messages here
+        if result['statusCode'] == '200':
+            status = 'success'
+        else:
+            status = 'failed'
         header = {}
-        header["Location"] = 'https://www.meetadoo.com/#/register'
+        header["Location"] = 'https://www.meetadoo.com/#/login?status=' + status
         # Overide status code so it redirects with 302
         return {
             "headers": header,
