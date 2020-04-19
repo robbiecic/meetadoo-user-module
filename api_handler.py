@@ -108,7 +108,7 @@ class API_Handler:
         }
 
     def create_user(self):
-        result = create_user(self.body)
+        result = create_user(self.body['data'])
         return {
             'statusCode': result['statusCode'],
             'body': result['response']
