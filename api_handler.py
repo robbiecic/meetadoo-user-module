@@ -50,9 +50,10 @@ class API_Handler:
         # Redirect to register page after, need to think about passing success and fail messages here
         header = {}
         header["Location"] = 'https://www.meetadoo.com/#/register'
+        # Overide status code so it redirects with 302
         return {
             "headers": header,
-            'statusCode': result['statusCode'],
+            'statusCode': 302,
             'body': result['response']
         }
 

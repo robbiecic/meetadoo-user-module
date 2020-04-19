@@ -1,6 +1,8 @@
 ## About
 
-This micro service handles all user actions such as:
+This serverless micro service is supported by AWS API Gateway using Lambda proxy integration.
+
+The service itself handles all user actions such as:
 
 - Account Creation
 - Account Validation
@@ -8,11 +10,16 @@ This micro service handles all user actions such as:
 - Account updates
 - Token issuer
 
+### Devops
+
+It's currently not built in docker, but may change in the future. It leverages AWS cloud-native services such as CloudFormation to describe the resources, and is managed by AWS CodePipeline, built by CodeBuild.
+
 ## How it works
 
-1. User logs in provided email and password (via https)
-2. If successful, Server responds with Set-Cookie HTTPONLY. This includes jwt_token encrypted with the email_address of the user
-3. When performing GET calls to the server, the jwt_token is stripped to get the email address of the user. This means the user is never stored on the client, only in the browser HTTPS cookie
+1. User requests a new account. The account is stored separately until the email is validated then moved to a live account database
+2. User logs in with provided email and password
+3. If successful, Server responds with Set-Cookie HTTPONLY, Secure. This includes jwt_token encrypted with the email_address of the user.
+4. When performing GET calls to the server, the jwt_token is stripped to get the email address of the user. This means the user is never stored on the client, only in the jwt stored within the browsers' HTTPS cookie
 
 ## Backlog
 
