@@ -16,12 +16,12 @@ This micro service handles all user actions such as:
 
 ## Backlog
 
+- Need to label build versions better
 - Might need a class to handle structure of cloud watch logs
 - Create login Audit. I.e. Date, IP Address, Email address. This can be displayed to the user if need be
 - Create Audit of the API request being made. Could do this in cloud watch
 - Need an email verification step
 - Need email alerts
 - Need to revisit the code that strips out the JWT token from the header
-- Need to label build versions better
 - Need to incorporate static code analysis and security scanners
 - Build in a redis cache

@@ -1,4 +1,7 @@
 version: 0.2
+env:
+  variables:
+    TEST_ENV_VARIABLE: UserMicroService
 phases:
   install:
     runtime-versions:
@@ -21,3 +24,4 @@ artifacts:
   files:
     - template.yaml
     - outputtemplate.yaml
+  name: $Env:TEST_ENV_VARIABLE-$(Get-Date -UFormat "%Y%m%d-%H%M")
