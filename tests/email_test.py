@@ -1,5 +1,5 @@
 import unittest
-from my_email import EmailService
+from EmailService import EmailService
 import warnings
 
 # Data set up only for this unit test. WIll be teared down after
