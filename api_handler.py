@@ -48,13 +48,11 @@ class API_Handler:
         result = validate_email(
             self.queryStringParameters['email'], self.queryStringParameters['token'])
         if result['statusCode'] == '200':
-            url = 'https://www.meetadoo.com/#/login?status='
-            status = 'success'
+            url = 'https://www.meetadoo.com/#/login?status=welcome'
         else:
-            url = 'https://www.meetadoo.com/#/register?status='
-            status = 'failed'
+            url = 'https://www.meetadoo.com/#/register?status=failedemail'
         header = {}
-        header["Location"] = url + status
+        header["Location"] = url
         # Overide status code so it redirects with 302
         return {
             "headers": header,
