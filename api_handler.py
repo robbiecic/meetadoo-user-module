@@ -1,10 +1,11 @@
-from user_functions import create_user, remove_user, login, get_user, isAuthenticated, update_user, get_user_list, set_expired_cookie
+from user_functions import create_user, remove_user, login, get_user, isAuthenticated, update_user, get_user_list, set_expired_cookie, validate_email
 
 
 class API_Handler:
 
-    def __init__(self, action: str, httpMethod: str, body: dict, header: dict):
-        self.action = action
+    def __init__(self, queryStringParameters: str, httpMethod: str, body: dict, header: dict):
+        self.queryStringParameters = queryStringParameters
+        self.action = queryStringParameters['action']
         self.httpMethod = httpMethod
         self.body = body
         self.header = header
@@ -25,6 +26,8 @@ class API_Handler:
             return self.login()
         elif self.action == 'isAuthenticated' and self.httpMethod == 'GET':
             return self.isAuthenticated()
+        elif self.action == 'ConfirmEmail' and self.httpMethod == 'GET':
+            return self.confirm_email()
         elif self.action == 'Logout' and self.httpMethod == 'POST' and self.authenticated_response:
             return self.logout()
         elif self.action == 'RemoveUser' and self.httpMethod == 'POST' and self.authenticated_response:
@@ -40,6 +43,11 @@ class API_Handler:
                 'statusCode': 400,
                 'body': "A valid request action was not provided"
             }
+
+    def confirm_email():
+        result = validate_email(
+            self.queryStringParameters['email'], self.queryStringParameters['jwt'])
+        return result
 
     def isAuthenticated(self):
         result = isAuthenticated(self.jwt)
@@ -101,9 +109,7 @@ class API_Handler:
 
     def create_user(self):
         result = create_user(self.body)
-        header["Set-Cookie"] = result['cookie']
         return {
-            "headers": header,
             'statusCode': result['statusCode'],
             'body': result['response']
         }

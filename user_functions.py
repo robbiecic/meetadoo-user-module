@@ -8,6 +8,7 @@ from datetime import timedelta
 from boto3.dynamodb.conditions import Key, Attr
 from aws.aws import create_dynamodb_client, create_dynamodb_resource
 from aws.secrets import get_secrets
+from my_email import EmailService
 
 # Create dynamodb instance
 dynamodb_client = create_dynamodb_client()
@@ -58,30 +59,48 @@ def isAuthenticated(encoded_jwt):
         return custom_400('Token expired or not valid')
 
 
+def validate_email(email, jwt):
+    response = isAuthenticated(jwt)
+    email = response['response']
+    if response['statusCode'] == 200:
+        response = dynamodb_client.get_item(
+            TableName='Pending_User', Key={'email_address': {'S': email}})
+        item = {'email_address': response['Item']['email_address'], 'first_name': response['Item']
+                ['first_name'], 'surname': response['Item']['surname'], 'password': response['Item']['password']}
+        response2 = dynamodb_client.put_item(
+            TableName='User', Item=item)
+        dynamodb_client.delete_item(TableName='Pending_User', Key={
+                                    'email_address': {'S': email}})
+        return {'statusCode': 200, 'response': ''}
+    else:
+        dynamodb_client.delete_item(TableName='Pending_User', Key={
+                                    'email_address': {'S': email}})
+        return custom_400('Your token has expired, please re-create an account at http://www.meetadoo.com')
+
+
 def create_user(body):
     # Body must contain the user object
     try:
         email = body['email']
         firstname = body['firstname']
         surname = body['surname']
-        # For updates, password will not exist
         hashed_password = encrypt_string(body['password'])
+        # Set JWT as 24 hours from now
+        expiry_time = datetime.utcnow() + timedelta(seconds=60 * 60 * 24)
+        encoded_jwt = jwt.encode(
+            {'email': email, 'exp': expiry_time}, 'NoteItUser', algorithm='HS256').decode('utf-8')
         item = {'email_address': {'S': email}, 'first_name': {
-            'S': firstname}, 'surname': {'S': surname}, 'password': {'B': hashed_password}}
+            'S': firstname}, 'surname': {'S': surname}, 'password': {'B': hashed_password}, 'jwt': {'S': encoded_jwt}}
 
         # Check if user exists before creating
-        if return_user(email) == 0:
+        if return_pending_user(email) == 0:
             # Send item to User table
-            response = dynamodb_client.put_item(TableName='User', Item=item)
-            expiry_time = datetime.utcnow() + timedelta(seconds=60 * 30)
-            encoded_jwt = jwt.encode(
-                {'email': email, 'exp': expiry_time}, 'NoteItUser', algorithm='HS256').decode('utf-8')
-            return_body = {}
-            return_body["firstname"] = firstname
-            return_body["surname"] = surname
-            return_body["email"] = email
-            cookie_string = set_cookie(encoded_jwt)
-            return {'cookie': cookie_string, 'statusCode': 200, 'response': str(return_body)}
+            response = dynamodb_client.put_item(
+                TableName='Pending_User', Item=item)
+            # Send welcome email
+            email_object = EmailService(email, encoded_jwt)
+            email_object.send_welcome_email()
+            return {'statusCode': 200, 'response': encoded_jwt}
         else:
             return custom_400('ERROR: A user with this email address already exists.')
     except Exception as e:
@@ -110,6 +129,15 @@ def update_user(body):
 def remove_user(email):
     if return_user(email) != 0:
         dynamodb_client.delete_item(TableName='User', Key={
+                                    'email_address': {'S': email}})
+        return('Removed User Successfully - ' + str(email))
+    else:
+        return custom_400('No User found')
+
+
+def remove_pending_user(email):
+    if return_pending_user(email) != 0:
+        dynamodb_client.delete_item(TableName='Pending_User', Key={
                                     'email_address': {'S': email}})
         return('Removed User Successfully - ' + str(email))
     else:
@@ -164,6 +192,17 @@ def return_user(email_address):
         return 0
 
 
+def return_pending_user(email_address):
+    response = dynamodb_client.get_item(
+        TableName='Pending_User', Key={'email_address': {'S': email_address}})
+    # Check if an user existsx
+    try:
+        user = response['Item']
+        return user
+    except:
+        return 0
+
+
 def custom_400(message):
     return {'statusCode': 400, 'response': message}
 
@@ -186,8 +225,7 @@ def set_expired_cookie():
     # Set Expiry to 1 day ago
     expires = (datetime.utcnow() -
                timedelta(seconds=60 * 60 * 24)).strftime("%a, %d %b %Y %H:%M:%S GMT")
-    cookie_string = 'jwt=' + str(jwt) + ';  expires=' + \
-        str(expires) + \
+    cookie_string = 'jwt=' + str(jwt) + ';  expires=' + str(expires) + \
         "; Path=/; Max-Age=3600; Domain=www.meetadoo.com; HttpOnly; Secure"
     return cookie_string
 

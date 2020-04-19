@@ -11,6 +11,6 @@ def lambda_handler(event, context):
         body = {}
 
     # Create Class and process event
-    API = API_Handler(event['queryStringParameters']['action'],
+    API = API_Handler(event['queryStringParameters'],
                       event['httpMethod'], body, event['headers'])
     return API.run_action()

@@ -1,19 +1,22 @@
 import unittest
-from user_functions import login, create_user, remove_user, update_user, isAuthenticated, return_user, get_user, get_user_list
+from user_functions import login, create_user, remove_user, update_user, isAuthenticated, return_user, get_user, get_user_list, remove_pending_user, validate_email
 from index import lambda_handler
 import json
+import warnings
 
 # Data set up only for this unit test. WIll be teared down after
-user_object = {"email": "test@NoteIt.com",
+my_email = 'robert.cicero.rc@gmail.com'
+user_object = {"email": my_email,
                "password": "TestPassword123", "firstname": "Test", "surname": "Test Surname"}
 
-user_object2 = {"email": "test@NoteIt.com",
+user_object2 = {"email": my_email,
                 "firstname": "New Name", "surname": "New Surname"}
 
-user_object_bad = {"email": "test@NoteIt.com",
+user_object_bad = {"email": my_email,
                    "password": "BAD PASSSWORD", "firstname": "Test", "surname": "Test Surname"}
 
 bad_jwt = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RATm90ZUl0LmNvbSIsImlhdCI6MTUxNjIzOTAyMn0.paCMHeNjrWR5N4t6_eWsZWxTfscugu2gIyacT8zVFyY'
+
 
 with open('tests/event_login.json') as json_file:
     event_login = json.load(json_file)
@@ -26,11 +29,21 @@ class UserTestCase(unittest.TestCase):
     # Remove Test User
     @classmethod
     def tearDownClass(cls):
-        remove_user('test@NoteIt.com')
+        remove_user(my_email)
+        remove_pending_user(my_email)
+
+    # Disable warnings, known AWS issue
+    @classmethod
+    def setUp(self):
+        warnings.filterwarnings(
+            "ignore", category=ResourceWarning, message="unclosed.*<ssl.SSLSocket.*>")
 
     # Create test user
     def test_create_user(self):
         response = create_user(user_object)
+        jwt = response['response']
+        self.assertEqual(response['statusCode'], 200)
+        response = validate_email(my_email, jwt)
         self.assertEqual(response['statusCode'], 200)
 
     # # Get Test User

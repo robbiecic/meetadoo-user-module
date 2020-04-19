@@ -23,7 +23,6 @@ def get_secrets():
         get_secret_value_response = client.get_secret_value(
             SecretId=secret_name
         )
-        print(get_secret_value_response)
 
     except ClientError as e:
         if e.response['Error']['Code'] == 'DecryptionFailureException':
@@ -50,7 +49,9 @@ def get_secrets():
         # Decrypts secret using the associated KMS CMK.
         # Depending on whether the secret is a string or binary, one of these fields will be populated.
         if 'SecretString' in get_secret_value_response:
+            client = None
             return get_secret_value_response['SecretString']
         else:
+            client = None
             return base64.b64decode(
                 get_secret_value_response['SecretBinary'])
