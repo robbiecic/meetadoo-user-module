@@ -3,7 +3,7 @@ from user_functions import create_user, remove_user, login, get_user, isAuthenti
 
 class API_Handler:
 
-    def __init__(self, queryStringParameters: str, httpMethod: str, body: dict, header: dict):
+    def __init__(self, queryStringParameters: dict, httpMethod: str, body: dict, header: dict):
         self.queryStringParameters = queryStringParameters
         self.action = queryStringParameters['action']
         self.httpMethod = httpMethod
@@ -44,7 +44,7 @@ class API_Handler:
                 'body': "A valid request action was not provided"
             }
 
-    def confirm_email():
+    def confirm_email(self):
         result = validate_email(
             self.queryStringParameters['email'], self.queryStringParameters['token'])
         # Redirect to register page after, need to think about passing success and fail messages here
