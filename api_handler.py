@@ -46,7 +46,7 @@ class API_Handler:
 
     def confirm_email():
         result = validate_email(
-            self.queryStringParameters['email'], self.queryStringParameters['jwt'])
+            self.queryStringParameters['email'], self.queryStringParameters['token'])
         return result
 
     def isAuthenticated(self):

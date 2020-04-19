@@ -10,6 +10,7 @@ from aws.aws import create_dynamodb_client, create_dynamodb_resource
 from aws.secrets import get_secrets
 from EmailService import EmailService
 
+
 # Create dynamodb instance
 dynamodb_client = create_dynamodb_client()
 dynamodb_resource = create_dynamodb_resource()
