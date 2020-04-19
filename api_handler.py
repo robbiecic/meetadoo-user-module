@@ -47,7 +47,14 @@ class API_Handler:
     def confirm_email():
         result = validate_email(
             self.queryStringParameters['email'], self.queryStringParameters['token'])
-        return result
+        # Redirect to register page after, need to think about passing success and fail messages here
+        header = {}
+        header["Location"] = 'https://www.meetadoo.com/#/register'
+        return {
+            "headers": header,
+            'statusCode': result['statusCode'],
+            'body': result['response']
+        }
 
     def isAuthenticated(self):
         result = isAuthenticated(self.jwt)
