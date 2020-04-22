@@ -15,7 +15,7 @@ phases:
   pre_build:
     commands:
       - python -m unittest -v tests/user_test.py
-      - aws s3 sync ./swagger "s3://meetadoo-swagger"
+      - aws s3 sync ./swagger "s3://swagger-static-website"
   build:
     commands:
       - export BUCKET=builds-user-module
