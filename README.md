@@ -23,8 +23,6 @@ It's currently not built in docker, but may change in the future. It leverages A
 
 ## Backlog
 
-- Add openAPI definition
-- Create resource profile for API Gateway
 - Change action parameter to be a path instead
 - Create login Audit. I.e. Date, IP Address, Email address. This can be displayed to the user if need be
 - Create Audit of the API request being made. Could do this in cloud watch (Need a class to handle structure of cloud watch logs)

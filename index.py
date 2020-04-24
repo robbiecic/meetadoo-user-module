@@ -10,6 +10,7 @@ def lambda_handler(event, context):
     except:
         body = {}
 
+    print('event - ', event)
     # Create Class and process event
     API = API_Handler(event['queryStringParameters'],
                       event['httpMethod'], body, event['headers'])
