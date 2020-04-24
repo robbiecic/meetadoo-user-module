@@ -18,9 +18,9 @@ user_object_bad = {"email": my_email,
 bad_jwt = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RATm90ZUl0LmNvbSIsImlhdCI6MTUxNjIzOTAyMn0.paCMHeNjrWR5N4t6_eWsZWxTfscugu2gIyacT8zVFyY'
 
 
-with open('tests/event_login.json') as json_file:
+with open('tests/test-data/event_login.json') as json_file:
     event_login = json.load(json_file)
-with open('tests/event_auth.json') as json_file:
+with open('tests/test-data/event_auth.json') as json_file:
     event_auth = json.load(json_file)
 
 
