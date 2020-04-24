@@ -34,7 +34,7 @@ def login(body):
         if bcrypt.checkpw(password + data['hash_secret'].encode('utf-8'), hashed_password):
             expiry_time = datetime.utcnow() + timedelta(seconds=60 * 30)
             encoded_jwt = jwt.encode(
-                {'email': email, 'exp': expiry_time}, 'NoteItUser', algorithm='HS256').decode('utf-8')
+                {'email': email, 'exp': expiry_time}, data['jwt_encode'], algorithm='HS256').decode('utf-8')
             return_body = {}
             return_body["firstname"] = user_details['first_name']['S']
             return_body["surname"] = user_details['surname']['S']
@@ -48,7 +48,7 @@ def login(body):
 def isAuthenticated(encoded_jwt):
     # jwt decode will throw an exception if fails verification
     try:
-        payload = jwt.decode(encoded_jwt, 'NoteItUser', algorithms=['HS256'])
+        payload = jwt.decode(encoded_jwt, data['jwt_encode'] algorithms=['HS256'])
     except Exception as identifier:
         return custom_400('JWT INVALID')
     # if valid ensure not expired token
@@ -89,7 +89,7 @@ def create_user(body):
         # Set JWT as 24 hours from now
         expiry_time = datetime.utcnow() + timedelta(seconds=60 * 60 * 24)
         encoded_jwt = jwt.encode(
-            {'email': email, 'exp': expiry_time}, 'NoteItUser', algorithm='HS256').decode('utf-8')
+            {'email': email, 'exp': expiry_time}, data['jwt_encode'], algorithm='HS256').decode('utf-8')
         item = {'email_address': {'S': email}, 'first_name': {
             'S': firstname}, 'surname': {'S': surname}, 'password': {'B': hashed_password}, 'jwt': {'S': encoded_jwt}}
 
